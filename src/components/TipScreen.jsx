@@ -47,11 +47,41 @@ const TipScreen = () => {
   };
 
   const handleSkipTip = () => {
-    navigate(`/confirm?amount=${baseAmount}&tip=0&method=${method}`);
+    // Get selected items from URL parameters
+    const urlParams = new URLSearchParams(location.search);
+    const selectedOrder = urlParams.get('order');
+    const selectedCatalog = urlParams.get('catalog');
+    const selectedMemo = urlParams.get('memo');
+    
+    const params = new URLSearchParams();
+    params.set('amount', baseAmount);
+    params.set('tip', '0');
+    params.set('method', method);
+    
+    if (selectedOrder) params.set('order', selectedOrder);
+    if (selectedCatalog) params.set('catalog', selectedCatalog);
+    if (selectedMemo) params.set('memo', selectedMemo);
+    
+    navigate(`/confirm?${params.toString()}`);
   };
 
   const handleAddTip = () => {
-    navigate(`/confirm?amount=${baseAmount}&tip=${selectedTip}&method=${method}`);
+    // Get selected items from URL parameters
+    const urlParams = new URLSearchParams(location.search);
+    const selectedOrder = urlParams.get('order');
+    const selectedCatalog = urlParams.get('catalog');
+    const selectedMemo = urlParams.get('memo');
+    
+    const params = new URLSearchParams();
+    params.set('amount', baseAmount);
+    params.set('tip', selectedTip);
+    params.set('method', method);
+    
+    if (selectedOrder) params.set('order', selectedOrder);
+    if (selectedCatalog) params.set('catalog', selectedCatalog);
+    if (selectedMemo) params.set('memo', selectedMemo);
+    
+    navigate(`/confirm?${params.toString()}`);
   };
 
   return (

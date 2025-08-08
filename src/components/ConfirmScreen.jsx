@@ -16,6 +16,11 @@ const ConfirmScreen = () => {
   const tipAmount = parseFloat(urlParams.get('tip') || '0');
   const fromTransactions = urlParams.get('from') === 'transactions';
   
+  // Get selected items from URL parameters
+  const selectedOrder = urlParams.get('order') ? JSON.parse(decodeURIComponent(urlParams.get('order'))) : null;
+  const selectedCatalog = urlParams.get('catalog') ? JSON.parse(decodeURIComponent(urlParams.get('catalog'))) : null;
+  const selectedMemo = urlParams.get('memo') ? JSON.parse(decodeURIComponent(urlParams.get('memo'))) : null;
+  
   // Clean the amount and ensure proper formatting
   const cleanAmount = rawAmount.replace(/^\$+/, ''); // Remove any existing $ symbols
   const baseAmount = parseFloat(cleanAmount);
@@ -162,22 +167,64 @@ const ConfirmScreen = () => {
           </CardContent>
         </Card>
 
-        {/* Custom Fields */}
+        {/* Selected Items or Custom Fields */}
         <Card className="bg-white dark:bg-gray-800 border-0 shadow-md shadow-gray-200/30 dark:shadow-gray-900/30">
           <CardContent className="p-5">
             <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400 font-medium">Custom Field 1:</span>
-                <span className="font-semibold text-gray-700 dark:text-gray-200">23s983j</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400 font-medium">Custom Field 2:</span>
-                <span className="font-semibold text-gray-700 dark:text-gray-200">23s983j</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400 font-medium">Custom Field 3:</span>
-                <span className="font-semibold text-gray-700 dark:text-gray-200">23s983j</span>
-              </div>
+              {selectedOrder ? (
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">Order Number:</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-200">{selectedOrder.orderNumber}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">Customer:</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-200">{selectedOrder.customerName}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">Customer ID:</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-200">{selectedOrder.customerNumber}</span>
+                  </div>
+                </div>
+              ) : selectedCatalog ? (
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">Service Type:</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-200">Parts & Labor</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">Catalog Total:</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-200">${selectedCatalog.total}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">Service Category:</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-200">Automotive</span>
+                  </div>
+                </div>
+              ) : selectedMemo ? (
+                <div className="space-y-3">
+                  <div className="flex justify-between items-start">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">Memo:</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-200 text-right max-w-xs break-words">{selectedMemo.text}</span>
+                  </div>
+                </div>
+              ) : (
+                // Fallback to placeholder custom fields if no items selected
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">Custom Field 1:</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-200">23s983j</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">Custom Field 2:</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-200">23s983j</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">Custom Field 3:</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-200">23s983j</span>
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

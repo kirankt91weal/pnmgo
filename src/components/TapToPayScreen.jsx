@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { X, ShoppingCart, SmartphoneNfc, Check } from 'lucide-react';
 import { Button } from './ui/button';
@@ -14,7 +14,7 @@ const TapToPayScreen = () => {
   const [cvv, setCvv] = useState('');
   
   // Get amount from URL parameters
-  const urlParams = new URLSearchParams(location.search);
+  const urlParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const amount = urlParams.get('amount') || '$17.25';
 
   // Generate animated dots
@@ -40,14 +40,27 @@ const TapToPayScreen = () => {
   useEffect(() => {
     if (showCheck) {
       const receiptTimer = setTimeout(() => {
-        navigate(`/tip?amount=${amount}&method=tap`);
+        // Get selected items from URL parameters
+        const selectedOrder = urlParams.get('order');
+        const selectedCatalog = urlParams.get('catalog');
+        const selectedMemo = urlParams.get('memo');
+        
+        const params = new URLSearchParams();
+        params.set('amount', amount);
+        params.set('method', 'tap');
+        
+        if (selectedOrder) params.set('order', selectedOrder);
+        if (selectedCatalog) params.set('catalog', selectedCatalog);
+        if (selectedMemo) params.set('memo', selectedMemo);
+        
+        navigate(`/tip?${params.toString()}`);
       }, 3000);
 
       return () => {
         clearTimeout(receiptTimer);
       };
     }
-  }, [showCheck, navigate, amount]);
+  }, [showCheck, navigate, amount, urlParams]);
 
   const handleSimulate = () => {
     setShowCheck(true);
@@ -92,8 +105,21 @@ const TapToPayScreen = () => {
   };
 
   const handleCompletePayment = () => {
+    // Get selected items from URL parameters
+    const selectedOrder = urlParams.get('order');
+    const selectedCatalog = urlParams.get('catalog');
+    const selectedMemo = urlParams.get('memo');
+    
+    const params = new URLSearchParams();
+    params.set('amount', amount);
+    params.set('method', 'keyin');
+    
+    if (selectedOrder) params.set('order', selectedOrder);
+    if (selectedCatalog) params.set('catalog', selectedCatalog);
+    if (selectedMemo) params.set('memo', selectedMemo);
+    
     // Navigate to tip screen with card info
-    navigate(`/tip?amount=${amount}&method=keyin`);
+    navigate(`/tip?${params.toString()}`);
   };
 
   return (
