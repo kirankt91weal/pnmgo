@@ -362,39 +362,27 @@ const TransactionsScreen = () => {
       {/* Calendar Modal */}
       {showCalendar && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 w-80">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Select Date</h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowCalendar(false)}
-                className="p-1"
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-80 border border-gray-200 dark:border-gray-700">
             {/* Month Navigation */}
             <div className="flex items-center justify-between mb-4">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={goToPreviousMonth}
-                className="p-1"
+                className="p-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
               
               <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium">
+                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                   {currentCalendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </span>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={goToToday}
-                  className="text-xs px-2 py-1"
+                  className="text-xs px-2 py-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                 >
                   Today
                 </Button>
@@ -404,7 +392,7 @@ const TransactionsScreen = () => {
                 variant="ghost"
                 size="sm"
                 onClick={goToNextMonth}
-                className="p-1"
+                className="p-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
                 <ChevronRight className="w-4 h-4" />
               </Button>
@@ -412,7 +400,7 @@ const TransactionsScreen = () => {
             
             <div className="grid grid-cols-7 gap-1 mb-4">
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                <div key={day} className="text-center text-xs font-medium text-gray-500 py-1">
+                <div key={day} className="text-center text-xs font-medium text-gray-500 dark:text-gray-400 py-1">
                   {day}
                 </div>
               ))}
@@ -432,10 +420,10 @@ const TransactionsScreen = () => {
                       isSelected
                         ? 'bg-blue-600 text-white'
                         : isToday
-                        ? 'bg-gray-100 text-gray-700'
+                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                         : isCurrentMonth && isInRange
-                        ? 'text-gray-700 hover:bg-gray-50'
-                        : 'text-gray-400 cursor-not-allowed'
+                        ? 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                        : 'text-gray-400 dark:text-gray-500 cursor-not-allowed'
                     }`}
                   >
                     {date.getDate()}
@@ -444,11 +432,11 @@ const TransactionsScreen = () => {
               })}
             </div>
             
-            <div className="flex justify-end">
+            <div className="flex justify-end space-x-2">
               <Button
                 variant="outline"
                 onClick={() => setShowCalendar(false)}
-                className="mr-2"
+                className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
               >
                 Cancel
               </Button>
