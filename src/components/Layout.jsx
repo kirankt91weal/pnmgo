@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, FileText, CreditCard, Settings, Zap } from 'lucide-react';
+import { Home, FileText, CreditCard, Settings } from 'lucide-react';
 
 const Layout = ({ children }) => {
   const navigate = useNavigate();

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { X, Search, Clock, FileText, ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -10,7 +10,7 @@ const OrderLookupModal = ({ isOpen, onClose, onOrderSelect }) => {
   const [searchResults, setSearchResults] = useState([]);
 
   // Mock order data
-  const mockOrders = [
+  const mockOrders = useMemo(() => [
     {
       id: 'ORD-001',
       orderNumber: 'ORD-001',
@@ -77,10 +77,10 @@ const OrderLookupModal = ({ isOpen, onClose, onOrderSelect }) => {
       status: 'Pending',
       date: '2024-01-13'
     }
-  ];
+  ], []);
 
   // Mock recently viewed orders (in a real app, this would come from localStorage or API)
-  const recentlyViewedOrders = [
+  const recentlyViewedOrders = useMemo(() => [
     {
       id: 'ORD-001',
       orderNumber: 'ORD-001',
@@ -117,9 +117,9 @@ const OrderLookupModal = ({ isOpen, onClose, onOrderSelect }) => {
       date: '2024-01-15',
       lastViewed: '10 minutes ago'
     }
-  ];
+  ], []);
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     if (!searchTerm.trim()) {
       setSearchResults([]);
       return;
@@ -145,7 +145,7 @@ const OrderLookupModal = ({ isOpen, onClose, onOrderSelect }) => {
       setSearchResults(results);
       setIsSearching(false);
     }, 800);
-  };
+  }, [searchTerm, mockOrders]);
 
   const handleOrderSelect = (order) => {
     onOrderSelect(order);
@@ -169,7 +169,7 @@ const OrderLookupModal = ({ isOpen, onClose, onOrderSelect }) => {
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [searchTerm]);
+  }, [searchTerm, handleSearch]);
 
   if (!isOpen) return null;
 

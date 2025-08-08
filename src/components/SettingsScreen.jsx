@@ -1,54 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Sun, Moon, Palette, Bell, Shield, HelpCircle, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Moon, Sun, Bell, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 
 const SettingsScreen = () => {
   const navigate = useNavigate();
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [notifications, setNotifications] = useState(true);
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   // Load theme preference from localStorage and current document state
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
-    const isCurrentlyDark = document.documentElement.classList.contains('dark');
-    
-    // Use saved theme if available, otherwise use current document state
-    if (savedTheme) {
-      setIsDarkMode(savedTheme === 'dark');
-    } else {
-      setIsDarkMode(isCurrentlyDark);
-    }
+    const isDark = savedTheme === 'dark' || document.documentElement.classList.contains('dark');
+    setIsDarkMode(isDark);
   }, []);
 
-  // Sync with document changes (in case theme was changed elsewhere)
-  useEffect(() => {
-    const checkTheme = () => {
-      const isCurrentlyDark = document.documentElement.classList.contains('dark');
-      setIsDarkMode(isCurrentlyDark);
-    };
-
-    // Check immediately
-    checkTheme();
-
-    // Set up observer to watch for class changes on document element
-    const observer = new MutationObserver(checkTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const handleThemeToggle = () => {
-    const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
+  const toggleTheme = () => {
+    const newTheme = isDarkMode ? 'light' : 'dark';
+    setIsDarkMode(!isDarkMode);
     
-    // Apply theme to document
-    if (newTheme) {
+    if (newTheme === 'dark') {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
     } else {
@@ -66,67 +38,41 @@ const SettingsScreen = () => {
 
   const settingsOptions = [
     {
-      icon: Palette,
+      icon: isDarkMode ? Sun : Moon,
       title: 'Appearance',
       subtitle: 'Light or dark mode',
       action: (
-        <div className="flex items-center space-x-3">
-          <Sun className={`w-4 h-4 ${!isDarkMode ? 'text-blue-600' : 'text-gray-400'}`} />
-          <div className="relative">
-            <button
-              onClick={handleThemeToggle}
-              className={`w-12 h-6 rounded-full transition-colors duration-200 ${
-                isDarkMode ? 'bg-blue-600' : 'bg-gray-300'
-              }`}
-            >
-              <div
-                className={`w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-200 ${
-                  isDarkMode ? 'transform translate-x-6' : 'transform translate-x-0.5'
-                }`}
-              />
-            </button>
-          </div>
-          <Moon className={`w-4 h-4 ${isDarkMode ? 'text-blue-600' : 'text-gray-400'}`} />
-        </div>
-      )
-    },
-    {
-      icon: Bell,
-      title: 'Notifications',
-      subtitle: 'Push notifications',
-      action: (
         <button
-          onClick={() => setNotifications(!notifications)}
+          onClick={toggleTheme}
           className={`w-12 h-6 rounded-full transition-colors duration-200 ${
-            notifications ? 'bg-blue-600' : 'bg-gray-300'
+            isDarkMode ? 'bg-blue-600' : 'bg-gray-300'
           }`}
         >
           <div
             className={`w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-200 ${
-              notifications ? 'transform translate-x-6' : 'transform translate-x-0.5'
+              isDarkMode ? 'transform translate-x-6' : 'transform translate-x-0.5'
             }`}
           />
         </button>
       )
     },
     {
-      icon: HelpCircle,
-      title: 'Help & Support',
-      subtitle: 'Get help and contact support',
+      icon: Bell,
+      title: 'Notifications',
+      subtitle: 'Enable/disable notifications',
       action: (
-        <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
-          Contact
-        </Button>
-      )
-    },
-    {
-      icon: Shield,
-      title: 'Privacy & Security',
-      subtitle: 'Manage your privacy settings',
-      action: (
-        <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
-          Manage
-        </Button>
+        <button
+          onClick={() => setNotificationsEnabled(!notificationsEnabled)}
+          className={`w-12 h-6 rounded-full transition-colors duration-200 ${
+            notificationsEnabled ? 'bg-blue-600' : 'bg-gray-300'
+          }`}
+        >
+          <div
+            className={`w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-200 ${
+              notificationsEnabled ? 'transform translate-x-6' : 'transform translate-x-0.5'
+            }`}
+          />
+        </button>
       )
     }
   ];

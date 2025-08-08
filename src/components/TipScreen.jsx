@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, DollarSign, Percent } from 'lucide-react';
+import { ArrowLeft, DollarSign } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 
@@ -25,7 +25,6 @@ const TipScreen = () => {
     { label: 'Custom', value: 0, percentage: null }
   ];
 
-  const totalAmount = baseAmount + selectedTip;
   const tipPercentage = selectedTip > 0 ? ((selectedTip / baseAmount) * 100).toFixed(0) : 0;
 
   const handleTipSelect = (tip) => {

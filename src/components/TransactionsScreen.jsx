@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, Check, ChevronRight, X, RotateCcw, DollarSign, CreditCard, AlertCircle, RefreshCw, ChevronLeft } from 'lucide-react';
+import { ArrowLeft, Calendar, Check, ChevronRight, X, RotateCcw, CreditCard, AlertCircle, RefreshCw, ChevronLeft } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCcVisa, faCcMastercard, faCcAmex, faCcDiscover } from '@fortawesome/free-brands-svg-icons';
 import { Button } from './ui/button';

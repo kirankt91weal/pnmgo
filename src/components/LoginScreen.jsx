@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Zap, Shield } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Card, CardContent } from './ui/card';
 
 const LoginScreen = () => {
   const [siteId, setSiteId] = useState('');
   const [accessCode, setAccessCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Force dark mode for login page
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+    
+    // Cleanup function to restore previous theme when leaving login
+    return () => {
+      // Don't remove dark class here as it might interfere with user's theme preference
+      // The theme will be properly restored when user navigates to other pages
+    };
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
