@@ -237,32 +237,32 @@ const HomeScreen = () => {
   const summary = getSummaryData();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 px-6 py-3 flex items-center justify-between shadow-sm">
+      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 px-6 py-3 flex items-center justify-between shadow-sm">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => navigate('/')}
-          className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
         >
-          <ArrowLeft className="w-5 h-5 text-gray-700" />
+          <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
         </Button>
-        <h1 className="text-lg font-medium text-gray-700 tracking-wide">Dashboard</h1>
+        <h1 className="text-lg font-medium text-gray-700 dark:text-gray-200 tracking-wide">Dashboard</h1>
         <div className="w-10"></div>
       </div>
 
       <div className="p-5 space-y-5">
         {/* Time Range Selector */}
-        <div className="flex bg-white rounded-xl p-1 border-0 shadow-md shadow-gray-200/30">
+        <div className="flex bg-white dark:bg-gray-800 rounded-xl p-1 border-0 shadow-md shadow-gray-200/30 dark:shadow-gray-900/30">
           {timeRanges.map((range) => (
             <button
               key={range.key}
               onClick={() => setSelectedTimeRange(range.key)}
               className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
                 selectedTimeRange === range.key
-                  ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md'
-                  : 'text-gray-600 hover:text-gray-700 hover:bg-gray-50'
+                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
               {range.label}
@@ -271,17 +271,17 @@ const HomeScreen = () => {
         </div>
 
         {/* Volume Chart */}
-        <Card className="bg-white border-0 shadow-lg shadow-gray-200/50">
+        <Card className="bg-white dark:bg-gray-800 border-0 shadow-lg shadow-gray-200/50 dark:shadow-gray-900/50">
           <CardContent className="p-5">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-700">Volume</h3>
+                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200">Volume</h3>
                 <div className="flex items-center space-x-3 mt-1">
-                  <span className="text-xl font-bold text-gray-700">{summary.total}</span>
+                  <span className="text-xl font-bold text-gray-700 dark:text-gray-200">{summary.total}</span>
                   <div className={`px-2 py-1 rounded text-xs font-medium ${
                     summary.isPositive 
-                      ? 'bg-green-100 text-green-700' 
-                      : 'bg-red-100 text-red-700'
+                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' 
+                      : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
                   }`}>
                     {summary.isPositive ? '+' : ''}{summary.growth}%
                   </div>
@@ -402,14 +402,14 @@ const HomeScreen = () => {
             </div>
             
             {/* Chart legend */}
-            <div className="flex items-center justify-center space-x-6 mt-4 pt-4 border-t border-gray-100">
+            <div className="flex items-center justify-center space-x-6 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
               <div className="flex items-center space-x-2">
                 <div className="w-2.5 h-2.5 bg-blue-500 rounded-full"></div>
-                <span className="text-xs text-gray-600">Current Period</span>
+                <span className="text-xs text-gray-600 dark:text-gray-400">Current Period</span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-2.5 h-2.5 bg-gray-400 rounded-full"></div>
-                <span className="text-xs text-gray-600">Previous Period</span>
+                <span className="text-xs text-gray-600 dark:text-gray-400">Previous Period</span>
               </div>
             </div>
           </CardContent>
@@ -418,17 +418,17 @@ const HomeScreen = () => {
         {/* Metrics Grid */}
         <div className="grid grid-cols-2 gap-4">
           {metrics.map((metric, index) => (
-            <Card key={index} className={`${metric.color} border-0 shadow-md shadow-gray-200/30 hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]`}>
+            <Card key={index} className={`${metric.color} dark:bg-gray-800 border-0 shadow-md shadow-gray-200/30 dark:shadow-gray-900/30 hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]`}>
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
                   <metric.icon className={`w-5 h-5 ${metric.iconColor}`} />
-                  <div className="text-green-700 px-2 py-1 rounded text-xs font-medium">
+                  <div className="text-green-700 dark:text-green-400 px-2 py-1 rounded text-xs font-medium">
                     {metric.change}
                   </div>
                 </div>
                 <div className="mt-4">
-                  <p className="text-sm font-medium text-gray-600 mb-1">{metric.title}</p>
-                  <p className="text-xl font-bold text-gray-700">{metric.value}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{metric.title}</p>
+                  <p className="text-xl font-bold text-gray-700 dark:text-gray-200">{metric.value}</p>
                 </div>
               </CardContent>
             </Card>

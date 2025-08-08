@@ -328,7 +328,7 @@ const TransactionsScreen = () => {
     .reduce((sum, t) => sum + parseFloat(t.amount.replace('$', '')), 0);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <style jsx>{`
         .scrollbar-hide {
           -ms-overflow-style: none;
@@ -339,23 +339,23 @@ const TransactionsScreen = () => {
         }
       `}</style>
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 px-6 py-4 flex items-center justify-between shadow-sm">
+      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 px-6 py-4 flex items-center justify-between shadow-sm">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => navigate('/home')}
-          className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
         >
-          <ArrowLeft className="w-5 h-5 text-gray-700" />
+          <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
         </Button>
-        <h1 className="text-lg font-medium text-gray-700 tracking-wide">Transactions</h1>
+        <h1 className="text-lg font-medium text-gray-700 dark:text-gray-200 tracking-wide">Transactions</h1>
         <Button
           variant="ghost"
           size="sm"
-          className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
           onClick={() => setShowCalendar(true)}
         >
-          <Calendar className="w-5 h-5 text-gray-700" />
+          <Calendar className="w-5 h-5 text-gray-700 dark:text-gray-300" />
         </Button>
       </div>
 
@@ -430,7 +430,7 @@ const TransactionsScreen = () => {
                     disabled={!isInRange}
                     className={`p-1 text-sm rounded transition-colors ${
                       isSelected
-                        ? 'bg-primary text-white'
+                        ? 'bg-blue-600 text-white'
                         : isToday
                         ? 'bg-gray-100 text-gray-700'
                         : isCurrentMonth && isInRange
@@ -452,7 +452,10 @@ const TransactionsScreen = () => {
               >
                 Cancel
               </Button>
-              <Button onClick={() => setShowCalendar(false)}>
+              <Button 
+                onClick={() => setShowCalendar(false)}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
                 Done
               </Button>
             </div>
@@ -462,7 +465,7 @@ const TransactionsScreen = () => {
 
       <div className="container space-y-6 p-6">
         {/* Date Selector */}
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm bg-white dark:bg-gray-800">
           <CardContent className="p-4">
             <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide" ref={dateContainerRef}>
               {dates.map((date) => (
@@ -471,15 +474,15 @@ const TransactionsScreen = () => {
                   onClick={() => setSelectedDate(date.id)}
                   className={`flex-shrink-0 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 border ${
                     selectedDate === date.id
-                      ? 'bg-primary text-white border-primary shadow-sm'
-                      : 'bg-background text-muted-foreground border-border hover:bg-accent hover:text-accent-foreground'
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                      : 'bg-background dark:bg-gray-700 text-muted-foreground dark:text-gray-300 border-border dark:border-gray-600 hover:bg-accent dark:hover:bg-gray-600 hover:text-accent-foreground dark:hover:text-gray-200'
                   }`}
                 >
                   <div className="text-center">
                     <div className={`text-xs mb-1 ${
                       selectedDate === date.id 
                         ? 'text-white font-bold' 
-                        : 'text-muted-foreground/70'
+                        : 'text-muted-foreground/70 dark:text-gray-400'
                     }`}>
                       {date.date.toLocaleDateString('en-US', { weekday: 'short' })}
                     </div>
@@ -493,7 +496,7 @@ const TransactionsScreen = () => {
                     <div className={`text-xs ${
                       selectedDate === date.id 
                         ? 'text-white font-bold' 
-                        : 'text-muted-foreground/70'
+                        : 'text-muted-foreground/70 dark:text-gray-400'
                     }`}>
                       {date.date.toLocaleDateString('en-US', { month: 'short' })}
                     </div>
@@ -507,7 +510,7 @@ const TransactionsScreen = () => {
         {/* Summary Cards */}
         <div className="grid grid-cols-4 gap-3">
           <Card 
-            className={`border-0 shadow-sm bg-gray-800 text-white cursor-pointer transition-all hover:bg-gray-700 ${activeFilter === 'complete' ? 'ring-2 ring-green-400' : ''}`}
+            className={`border-0 shadow-sm bg-gray-800 dark:bg-gray-800 text-white cursor-pointer transition-all hover:bg-gray-700 dark:hover:bg-gray-700 ${activeFilter === 'complete' ? 'ring-2 ring-green-400' : ''}`}
             onClick={() => setActiveFilter(activeFilter === 'complete' ? 'all' : 'complete')}
           >
             <CardContent className="p-4">
@@ -522,7 +525,7 @@ const TransactionsScreen = () => {
           </Card>
 
           <Card 
-            className={`border-0 shadow-sm bg-gray-800 text-white cursor-pointer transition-all hover:bg-gray-700 ${activeFilter === 'declined' ? 'ring-2 ring-red-400' : ''}`}
+            className={`border-0 shadow-sm bg-gray-800 dark:bg-gray-800 text-white cursor-pointer transition-all hover:bg-gray-700 dark:hover:bg-gray-700 ${activeFilter === 'declined' ? 'ring-2 ring-red-400' : ''}`}
             onClick={() => setActiveFilter(activeFilter === 'declined' ? 'all' : 'declined')}
           >
             <CardContent className="p-4">
@@ -537,7 +540,7 @@ const TransactionsScreen = () => {
           </Card>
 
           <Card 
-            className={`border-0 shadow-sm bg-gray-800 text-white cursor-pointer transition-all hover:bg-gray-700 ${activeFilter === 'refunded' ? 'ring-2 ring-blue-400' : ''}`}
+            className={`border-0 shadow-sm bg-gray-800 dark:bg-gray-800 text-white cursor-pointer transition-all hover:bg-gray-700 dark:hover:bg-gray-700 ${activeFilter === 'refunded' ? 'ring-2 ring-blue-400' : ''}`}
             onClick={() => setActiveFilter(activeFilter === 'refunded' ? 'all' : 'refunded')}
           >
             <CardContent className="p-4">
@@ -552,7 +555,7 @@ const TransactionsScreen = () => {
           </Card>
 
           <Card 
-            className={`border-0 shadow-sm bg-gray-800 text-white cursor-pointer transition-all hover:bg-gray-700 ${activeFilter === 'all' ? 'ring-2 ring-white' : ''}`}
+            className={`border-0 shadow-sm bg-gray-800 dark:bg-gray-800 text-white cursor-pointer transition-all hover:bg-gray-700 dark:hover:bg-gray-700 ${activeFilter === 'all' ? 'ring-2 ring-white' : ''}`}
             onClick={() => setActiveFilter('all')}
           >
             <CardContent className="p-4">
@@ -579,38 +582,38 @@ const TransactionsScreen = () => {
               return (
                 <Card 
                   key={transaction.id}
-                  className="cursor-pointer transition-all hover:shadow-md border-0 shadow-sm"
+                  className="cursor-pointer transition-all hover:shadow-md border-0 shadow-sm bg-white dark:bg-gray-800"
                   onClick={() => handleTransactionClick(transaction)}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
-                      {/* Left Side - Card Info */}
-                      <div className="flex items-center space-x-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-50">
-                          <FontAwesomeIcon 
-                            icon={transaction.cardBrand.icon} 
-                            className={`h-6 w-6 ${transaction.cardBrand.color}`}
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-sm font-medium">•••• {transaction.lastFour}</span>
-                            <div className="flex items-center space-x-1">
-                              <StatusIcon className={`h-3 w-3 ${transaction.statusColor}`} />
-                              <span className={`text-xs font-medium ${transaction.statusColor}`}>{transaction.status}</span>
-                            </div>
+                        {/* Left Side - Card Info */}
+                        <div className="flex items-center space-x-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700">
+                            <FontAwesomeIcon 
+                              icon={transaction.cardBrand.icon} 
+                              className={`h-6 w-6 ${transaction.cardBrand.color} dark:text-gray-300`}
+                            />
                           </div>
-                          <p className="text-xs text-muted-foreground">{transaction.date} • {transaction.time}</p>
+                          <div className="flex flex-col">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">•••• {transaction.lastFour}</span>
+                              <div className="flex items-center space-x-1">
+                                <StatusIcon className={`h-3 w-3 ${transaction.statusColor}`} />
+                                <span className={`text-xs font-medium ${transaction.statusColor}`}>{transaction.status}</span>
+                              </div>
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{transaction.date} • {transaction.time}</p>
+                          </div>
                         </div>
-                      </div>
-
-                      {/* Right Side - Amount */}
-                      <div className="flex items-center space-x-2">
-                        <span className={`text-sm font-semibold ${transaction.status === 'Declined' ? 'text-red-600' : transaction.status === 'Refunded' ? 'text-blue-600' : ''}`}>
-                          {transaction.status === 'Declined' ? '-' : transaction.status === 'Refunded' ? '-' : ''}{transaction.amount}
-                        </span>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                      </div>
+                        
+                        {/* Right Side - Amount */}
+                        <div className="flex items-center space-x-2">
+                          <span className={`text-sm font-semibold ${transaction.status === 'Declined' ? 'text-red-600' : transaction.status === 'Refunded' ? 'text-blue-600' : 'text-gray-900 dark:text-gray-100'}`}>
+                            {transaction.status === 'Declined' ? '-' : transaction.status === 'Refunded' ? '-' : ''}{transaction.amount}
+                          </span>
+                          <ChevronRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                        </div>
                     </div>
                   </CardContent>
                 </Card>

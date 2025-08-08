@@ -263,7 +263,7 @@ const TapToPayScreen = () => {
                   <Button
                     onClick={handleCompletePayment}
                     disabled={!cardNumber || !expiryDate || !cvv}
-                    className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-3 rounded-lg transition-all duration-200"
+                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-3 rounded-lg transition-all duration-200"
                   >
                     Complete Payment
                   </Button>

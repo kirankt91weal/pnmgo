@@ -65,24 +65,24 @@ const PaymentScreen = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Header */}
-      <div className="bg-white/95 backdrop-blur-md border-b border-slate-200/60 px-6 py-3 flex items-center justify-between shadow-sm">
+      <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-b border-slate-200/60 dark:border-gray-700/60 px-6 py-4 flex items-center justify-between shadow-sm">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => navigate('/home')}
-          className="p-2 hover:bg-slate-100 rounded-full transition-all duration-200"
+          className="p-2 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200"
         >
-          <ArrowLeft className="w-5 h-5 text-slate-700" />
+          <ArrowLeft className="w-5 h-5 text-slate-700 dark:text-gray-300" />
         </Button>
-        <h1 className="text-lg font-semibold text-slate-900 tracking-wide">New Payment</h1>
+        <h1 className="text-lg font-semibold text-slate-700 dark:text-gray-200 tracking-wide">New Payment</h1>
         <div className="w-10"></div>
       </div>
 
       <div className="p-4 space-y-4">
         {/* Premium Amount Display */}
-        <div className="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-6 border border-slate-200/50 shadow-lg shadow-slate-200/20">
+        <div className="bg-gradient-to-br from-white to-slate-50 dark:from-gray-800 dark:to-gray-700 rounded-3xl p-6 border border-slate-200/50 dark:border-gray-600/50 shadow-lg shadow-slate-200/20 dark:shadow-gray-900/20">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <div className="flex items-center justify-between mb-3">
@@ -90,12 +90,12 @@ const PaymentScreen = () => {
                   <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
                     <DollarSign className="w-4 h-4 text-white" />
                   </div>
-                  <p className="text-sm text-slate-600 font-semibold uppercase tracking-wider">Amount</p>
+                  <p className="text-sm text-slate-600 dark:text-gray-400 font-semibold uppercase tracking-wider">Amount</p>
                 </div>
-                <p className="text-xs text-slate-400 bg-slate-100 px-2 py-1 rounded-full">Max: $9,999.99</p>
+                <p className="text-xs text-slate-400 dark:text-gray-500 bg-slate-100 dark:bg-gray-700 px-2 py-1 rounded-full">Max: $9,999.99</p>
               </div>
               <div className="relative">
-                <span className={`font-light text-slate-900 tracking-tight ${
+                <span className={`font-light text-slate-900 dark:text-gray-100 tracking-tight ${
                   amount.length > 8 ? 'text-4xl' : 
                   amount.length > 6 ? 'text-5xl' : 'text-6xl'
                 }`}>${amount}</span>
@@ -108,25 +108,25 @@ const PaymentScreen = () => {
         </div>
 
         {/* Premium Action Buttons */}
-        <div className="flex border border-slate-200 rounded-2xl overflow-hidden shadow-lg shadow-slate-200/20">
+        <div className="flex border border-slate-200 dark:border-gray-600 rounded-2xl overflow-hidden shadow-lg shadow-slate-200/20 dark:shadow-gray-900/20">
           <Button
             variant="outline"
-            className="flex-1 h-12 border-0 border-r border-slate-200 bg-gradient-to-r from-slate-50 to-white hover:from-slate-100 hover:to-slate-50 hover:border-slate-300 transition-all duration-200"
+            className="flex-1 h-12 border-0 border-r border-slate-200 dark:border-gray-600 bg-gradient-to-r from-slate-50 to-white dark:from-gray-700 dark:to-gray-600 hover:from-slate-100 hover:to-slate-50 dark:hover:from-gray-600 dark:hover:to-gray-500 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200"
           >
-            <Search className="w-4 h-4 mr-2 text-slate-600" />
-            <span className="text-sm font-medium text-slate-700">Order</span>
+            <Search className="w-4 h-4 mr-2 text-slate-600 dark:text-gray-400" />
+            <span className="text-sm font-medium text-slate-700 dark:text-gray-300">Order</span>
           </Button>
           <Button
             variant="outline"
-            className="flex-1 h-12 border-0 border-l border-slate-200 bg-gradient-to-r from-slate-50 to-white hover:from-slate-100 hover:to-slate-50 hover:border-slate-300 transition-all duration-200"
+            className="flex-1 h-12 border-0 border-l border-slate-200 dark:border-gray-600 bg-gradient-to-r from-slate-50 to-white dark:from-gray-700 dark:to-gray-600 hover:from-slate-100 hover:to-slate-50 dark:hover:from-gray-600 dark:hover:to-gray-500 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200"
           >
-            <List className="w-4 h-4 mr-2 text-slate-600" />
-            <span className="text-sm font-medium text-slate-700">Catalog</span>
+            <List className="w-4 h-4 mr-2 text-slate-600 dark:text-gray-400" />
+            <span className="text-sm font-medium text-slate-700 dark:text-gray-300">Catalog</span>
           </Button>
         </div>
 
         {/* Premium Numeric Keypad */}
-        <div className="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-4 border border-slate-200/50 shadow-lg shadow-slate-200/20">
+        <div className="bg-gradient-to-br from-white to-slate-50 dark:from-gray-800 dark:to-gray-700 rounded-3xl p-4 border border-slate-200/50 dark:border-gray-600/50 shadow-lg shadow-slate-200/20 dark:shadow-gray-900/20">
           <div className="grid grid-cols-3 gap-3">
             {keypadNumbers.map((row, rowIndex) => (
               row.map((key, colIndex) => (
@@ -143,8 +143,8 @@ const PaymentScreen = () => {
                   }}
                   className={`h-14 rounded-2xl font-semibold text-xl transition-all duration-200 active:scale-95 ${
                     key === 'C' || key === '<'
-                      ? 'bg-gradient-to-r from-slate-100 to-slate-200 text-slate-600 hover:from-slate-200 hover:to-slate-300 hover:shadow-md border border-slate-200'
-                      : 'bg-gradient-to-r from-white to-slate-50 text-slate-900 hover:from-slate-100 hover:to-slate-200 hover:shadow-md border border-slate-200'
+                      ? 'bg-gradient-to-r from-slate-100 to-slate-200 dark:from-gray-600 dark:to-gray-500 text-slate-600 dark:text-gray-400 hover:from-slate-200 hover:to-slate-300 dark:hover:from-gray-500 dark:hover:to-gray-400 hover:shadow-md border border-slate-200 dark:border-gray-600'
+                      : 'bg-gradient-to-r from-white to-slate-50 dark:from-gray-700 dark:to-gray-600 text-slate-900 dark:text-gray-100 hover:from-slate-100 hover:to-slate-200 dark:hover:from-gray-600 dark:hover:to-gray-500 hover:shadow-md border border-slate-200 dark:border-gray-600'
                   }`}
                 >
                   {key === '<' ? <ChevronLeft className="w-6 h-6 mx-auto" /> : key}
@@ -158,7 +158,7 @@ const PaymentScreen = () => {
         <Button
           onClick={() => navigate(`/pay/123?amount=${amount}`)}
           disabled={amount === '0.00'}
-          className="w-full h-14 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:from-slate-300 disabled:to-slate-400 disabled:cursor-not-allowed text-white font-semibold text-lg rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-green-500/30 disabled:shadow-none transform hover:scale-[1.01] disabled:transform-none"
+          className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-300 disabled:to-slate-400 disabled:cursor-not-allowed text-white font-semibold text-lg rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/30 disabled:shadow-none transform hover:scale-[1.01] disabled:transform-none"
         >
           {amount === '0.00' ? 'Enter Amount' : `Pay $${amount}`}
         </Button>

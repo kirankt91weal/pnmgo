@@ -1,5 +1,5 @@
 // src/App.js
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginScreen from "./components/LoginScreen";
 import HomeScreen from "./components/HomeScreen";
@@ -8,9 +8,20 @@ import TapToPayScreen from "./components/TapToPayScreen";
 import TipScreen from "./components/TipScreen";
 import ConfirmScreen from "./components/ConfirmScreen";
 import TransactionsScreen from "./components/TransactionsScreen";
+import SettingsScreen from "./components/SettingsScreen";
 import Layout from "./components/Layout";
 
 function App() {
+  // Initialize theme from localStorage
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
   return (
     <Router>
       <Layout>
@@ -23,7 +34,7 @@ function App() {
           <Route path="/confirm" element={<ConfirmScreen />} />
           <Route path="/transactions" element={<TransactionsScreen />} />
           <Route path="/payment" element={<PaymentScreen />} />
-          <Route path="/settings" element={<div className="p-8 text-center">Settings Screen (Coming Soon)</div>} />
+          <Route path="/settings" element={<SettingsScreen />} />
       </Routes>
       </Layout>
     </Router>

@@ -18,7 +18,7 @@ const Layout = ({ children }) => {
       icon: FileText, 
       label: 'Transactions', 
       path: '/transactions',
-      activeColor: 'from-green-500 to-green-600',
+      activeColor: 'from-blue-500 to-blue-600',
       inactiveColor: 'text-gray-400'
     },
     { 
@@ -43,45 +43,31 @@ const Layout = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pb-20">
-      {children}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="pb-20">
+        {children}
+      </div>
       
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 p-2">
-        <div className="bg-white/95 backdrop-blur-md border-t border-gray-100 rounded-t-xl shadow-sm">
-          <div className="flex justify-around items-center py-2">
-            {navItems.map((item, index) => {
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-4">
+        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-t border-gray-100 dark:border-gray-700 rounded-t-xl shadow-sm">
+          <div className="flex justify-around items-center py-1.5">
+            {navItems.map((item) => {
               const isActive = location.pathname === item.path;
+              const Icon = item.icon;
+              
               return (
                 <button
-                  key={index}
+                  key={item.path}
                   onClick={() => navigate(item.path)}
                   className={`flex flex-col items-center py-1.5 px-3 rounded-lg transition-all duration-150 ease-out ${
-                    isActive ? 'text-gray-700' : 'text-gray-500 hover:text-gray-700'
+                    isActive ? 'text-blue-700 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                   }`}
                 >
-                  {/* Icon */}
-                  <div className={`flex items-center justify-center w-7 h-7 rounded-lg transition-all duration-150 ${
-                    isActive
-                      ? `bg-gradient-to-r ${item.activeColor} shadow-sm`
-                      : 'group-hover:bg-gray-50'
-                  }`}>
-                    <item.icon className={`w-4 h-4 transition-all duration-150 ${
-                      isActive ? 'text-white' : 'text-gray-500 group-hover:text-gray-600'
-                    }`} />
+                  <div className="w-7 h-7 flex items-center justify-center">
+                    <Icon className="w-5 h-5" />
                   </div>
-                  
-                  {/* Label */}
-                  <span className={`text-xs font-medium mt-1 ${
-                    isActive ? 'font-semibold' : 'font-medium'
-                  }`}>
-                    {item.label}
-                  </span>
-                  
-                  {/* Active indicator */}
-                  {isActive && (
-                    <div className={`w-1 h-1 bg-gradient-to-r ${item.activeColor} rounded-full mt-1`} />
-                  )}
+                  <span className="text-xs font-medium mt-1">{item.label}</span>
                 </button>
               );
             })}
