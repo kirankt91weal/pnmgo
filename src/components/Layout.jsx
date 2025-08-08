@@ -57,7 +57,7 @@ const Layout = ({ children }) => {
                   key={index}
                   onClick={() => navigate(item.path)}
                   className={`flex flex-col items-center py-1.5 px-3 rounded-lg transition-all duration-150 ease-out ${
-                    isActive ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700'
+                    isActive ? 'text-gray-700' : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
                   {/* Icon */}

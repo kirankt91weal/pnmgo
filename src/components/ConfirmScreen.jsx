@@ -12,10 +12,15 @@ const ConfirmScreen = () => {
   
   // Get amount from URL parameters
   const urlParams = new URLSearchParams(location.search);
-  const amount = urlParams.get('amount') || '150.00';
+  const rawAmount = urlParams.get('amount') || '150.00';
+  const fromTransactions = urlParams.get('from') === 'transactions';
+  
+  // Clean the amount and ensure proper formatting
+  const cleanAmount = rawAmount.replace(/^\$+/, ''); // Remove any existing $ symbols
+  const amount = `$${parseFloat(cleanAmount).toFixed(2)}`;
   
   // Calculate service fee and total
-  const paymentAmount = parseFloat(amount);
+  const paymentAmount = parseFloat(cleanAmount);
   const serviceFee = 3.99;
   const total = paymentAmount + serviceFee;
   
@@ -65,12 +70,12 @@ const ConfirmScreen = () => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => navigate('/home')}
+          onClick={() => navigate(fromTransactions ? '/transactions' : '/home')}
           className="p-2 hover:bg-gray-100 rounded-full transition-colors"
         >
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </Button>
-        <h1 className="text-lg font-medium text-gray-800 tracking-wide">
+        <h1 className="text-lg font-medium text-gray-700 tracking-wide">
           {dateString} - {timeString}
         </h1>
         <div className="w-10"></div> {/* Spacer for centering */}
@@ -83,7 +88,7 @@ const ConfirmScreen = () => {
           <Card className="bg-gradient-to-br from-gray-50 to-white border-0 shadow-lg shadow-gray-200/50">
             <CardContent className="p-8">
               <div className="text-center">
-                <p className="text-4xl font-bold text-gray-900 tracking-tight">${amount}</p>
+                <p className="text-4xl font-bold text-gray-700 tracking-tight">{amount}</p>
               </div>
             </CardContent>
           </Card>
@@ -115,15 +120,15 @@ const ConfirmScreen = () => {
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 font-medium">Payment Amount:</span>
-                <span className="font-semibold text-gray-900">${amount}</span>
+                <span className="font-semibold text-gray-700">{amount}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 font-medium">Service Fee:</span>
-                <span className="font-semibold text-gray-900">${serviceFee.toFixed(2)}</span>
+                <span className="font-semibold text-gray-700">${serviceFee.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center border-t border-gray-200 pt-3">
-                <span className="font-bold text-gray-900">Total:</span>
-                <span className="font-bold text-gray-900">${total.toFixed(2)}</span>
+                <span className="font-bold text-gray-700">Total:</span>
+                <span className="font-bold text-gray-700">${total.toFixed(2)}</span>
               </div>
             </div>
           </CardContent>
@@ -135,15 +140,15 @@ const ConfirmScreen = () => {
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 font-medium">PNM Identifier:</span>
-                <span className="font-semibold text-gray-900">1254892535</span>
+                <span className="font-semibold text-gray-700">1254892535</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 font-medium">Customer Identifier:</span>
-                <span className="font-semibold text-gray-900">123691112</span>
+                <span className="font-semibold text-gray-700">123691112</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 font-medium">Order Identifier:</span>
-                <span className="font-semibold text-gray-900">125569412</span>
+                <span className="font-semibold text-gray-700">125569412</span>
               </div>
             </div>
           </CardContent>
@@ -155,15 +160,15 @@ const ConfirmScreen = () => {
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 font-medium">Custom Field 1:</span>
-                <span className="font-semibold text-gray-900">23s983j</span>
+                <span className="font-semibold text-gray-700">23s983j</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 font-medium">Custom Field 2:</span>
-                <span className="font-semibold text-gray-900">23s983j</span>
+                <span className="font-semibold text-gray-700">23s983j</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 font-medium">Custom Field 3:</span>
-                <span className="font-semibold text-gray-900">23s983j</span>
+                <span className="font-semibold text-gray-700">23s983j</span>
               </div>
             </div>
           </CardContent>

@@ -262,7 +262,7 @@ const HomeScreen = () => {
               className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
                 selectedTimeRange === range.key
                   ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  : 'text-gray-600 hover:text-gray-700 hover:bg-gray-50'
               }`}
             >
               {range.label}

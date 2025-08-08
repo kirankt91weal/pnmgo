@@ -348,7 +348,7 @@ const TransactionsScreen = () => {
         >
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </Button>
-        <h1 className="text-lg font-medium text-gray-800 tracking-wide">Transactions</h1>
+        <h1 className="text-lg font-medium text-gray-700 tracking-wide">Transactions</h1>
         <Button
           variant="ghost"
           size="sm"
@@ -432,9 +432,9 @@ const TransactionsScreen = () => {
                       isSelected
                         ? 'bg-primary text-white'
                         : isToday
-                        ? 'bg-gray-100 text-gray-900'
+                        ? 'bg-gray-100 text-gray-700'
                         : isCurrentMonth && isInRange
-                        ? 'text-gray-900 hover:bg-gray-50'
+                        ? 'text-gray-700 hover:bg-gray-50'
                         : 'text-gray-400 cursor-not-allowed'
                     }`}
                   >
