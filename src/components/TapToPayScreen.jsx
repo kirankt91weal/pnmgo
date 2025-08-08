@@ -40,7 +40,7 @@ const TapToPayScreen = () => {
   useEffect(() => {
     if (showCheck) {
       const receiptTimer = setTimeout(() => {
-        navigate(`/confirm?amount=${amount}`);
+        navigate(`/tip?amount=${amount}&method=tap`);
       }, 3000);
 
       return () => {
@@ -92,8 +92,8 @@ const TapToPayScreen = () => {
   };
 
   const handleCompletePayment = () => {
-    // Navigate to confirmation with card info
-    navigate(`/confirm?amount=${amount}&method=keyin`);
+    // Navigate to tip screen with card info
+    navigate(`/tip?amount=${amount}&method=keyin`);
   };
 
   return (

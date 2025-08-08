@@ -13,16 +13,18 @@ const ConfirmScreen = () => {
   // Get amount from URL parameters
   const urlParams = new URLSearchParams(location.search);
   const rawAmount = urlParams.get('amount') || '150.00';
+  const tipAmount = parseFloat(urlParams.get('tip') || '0');
   const fromTransactions = urlParams.get('from') === 'transactions';
   
   // Clean the amount and ensure proper formatting
   const cleanAmount = rawAmount.replace(/^\$+/, ''); // Remove any existing $ symbols
-  const amount = `$${parseFloat(cleanAmount).toFixed(2)}`;
+  const baseAmount = parseFloat(cleanAmount);
+  const amount = `$${baseAmount.toFixed(2)}`;
   
   // Calculate service fee and total
-  const paymentAmount = parseFloat(cleanAmount);
+  const paymentAmount = baseAmount;
   const serviceFee = 3.99;
-  const total = paymentAmount + serviceFee;
+  const total = paymentAmount + serviceFee + tipAmount;
   
   // Randomize card details
   const cardBrands = [
@@ -126,6 +128,12 @@ const ConfirmScreen = () => {
                 <span className="text-gray-600 font-medium">Service Fee:</span>
                 <span className="font-semibold text-gray-700">${serviceFee.toFixed(2)}</span>
               </div>
+              {tipAmount > 0 && (
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 font-medium">Tip:</span>
+                  <span className="font-semibold text-emerald-600">+${tipAmount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between items-center border-t border-gray-200 pt-3">
                 <span className="font-bold text-gray-700">Total:</span>
                 <span className="font-bold text-gray-700">${total.toFixed(2)}</span>
