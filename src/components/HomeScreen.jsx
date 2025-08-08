@@ -49,32 +49,32 @@ const HomeScreen = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 px-6 py-4 flex items-center justify-between shadow-sm">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => navigate('/')}
-          className="p-2"
+          className="p-2 hover:bg-gray-100 rounded-full transition-colors"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 text-gray-700" />
         </Button>
-        <h1 className="text-lg font-semibold text-gray-900">Dashboard</h1>
+        <h1 className="text-lg font-medium text-gray-800 tracking-wide">Dashboard</h1>
         <div className="w-10"></div> {/* Spacer for centering */}
       </div>
 
-      <div className="p-4 space-y-6">
+      <div className="p-6 space-y-6">
         {/* Time Range Selector */}
-        <div className="flex bg-white rounded-lg p-1 border border-gray-200">
+        <div className="flex bg-white rounded-xl p-1 border-0 shadow-md shadow-gray-200/30">
           {timeRanges.map((range) => (
             <button
               key={range.key}
               onClick={() => setSelectedTimeRange(range.key)}
-              className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+              className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
                 selectedTimeRange === range.key
-                  ? 'bg-green-500 text-white'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
               {range.label}
@@ -83,13 +83,13 @@ const HomeScreen = () => {
         </div>
 
         {/* Chart Placeholder */}
-        <Card className="bg-white">
-          <CardContent className="p-6">
-            <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+        <Card className="bg-white border-0 shadow-lg shadow-gray-200/50">
+          <CardContent className="p-8">
+            <div className="h-64 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center border border-gray-200/30">
               <div className="text-center text-gray-500">
-                <TrendingUp className="w-12 h-12 mx-auto mb-2 text-gray-400" />
-                <p className="text-sm font-medium">Chart Placeholder</p>
-                <p className="text-xs text-gray-400">Transaction data visualization</p>
+                <TrendingUp className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+                <p className="text-lg font-medium text-gray-600">Chart Placeholder</p>
+                <p className="text-sm text-gray-400 mt-1">Transaction data visualization</p>
               </div>
             </div>
           </CardContent>
@@ -98,14 +98,14 @@ const HomeScreen = () => {
         {/* Metrics Grid */}
         <div className="grid grid-cols-2 gap-4">
           {metrics.map((metric, index) => (
-            <Card key={index} className={`${metric.color} border`}>
-              <CardContent className="p-4">
+            <Card key={index} className={`${metric.color} border-0 shadow-md shadow-gray-200/30 hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]`}>
+              <CardContent className="p-6">
                 <div className="flex items-start justify-between">
-                  <metric.icon className={`w-5 h-5 ${metric.iconColor}`} />
+                  <metric.icon className={`w-6 h-6 ${metric.iconColor}`} />
                 </div>
-                <div className="mt-3">
-                  <p className="text-sm font-medium text-gray-600">{metric.title}</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{metric.value}</p>
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-600 mb-1">{metric.title}</p>
+                  <p className="text-2xl font-bold text-gray-900">{metric.value}</p>
                 </div>
               </CardContent>
             </Card>

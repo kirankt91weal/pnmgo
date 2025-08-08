@@ -44,51 +44,51 @@ const PaymentScreen = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 px-6 py-4 flex items-center justify-between shadow-sm">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => navigate('/home')}
-          className="p-2"
+          className="p-2 hover:bg-gray-100 rounded-full transition-colors"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 text-gray-700" />
         </Button>
-        <h1 className="text-lg font-semibold text-gray-900">New Payment</h1>
+        <h1 className="text-lg font-medium text-gray-800 tracking-wide">New Payment</h1>
         <div className="w-10"></div> {/* Spacer for centering */}
       </div>
 
-      <div className="p-4 space-y-4">
+      <div className="p-6 space-y-6">
         {/* Amount Display */}
-        <div className="bg-white rounded-lg p-4 border border-gray-200">
+        <div className="bg-white rounded-xl p-6 border-0 shadow-lg shadow-gray-200/50">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-sm text-gray-600 mb-1">Amount</p>
-              <p className="text-4xl text-gray-900 font-digital">${amount}</p>
+              <p className="text-sm text-gray-600 mb-2 font-medium">Amount</p>
+              <p className="text-5xl text-gray-900 font-digital tracking-tight">${amount}</p>
             </div>
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-3">
               <Button
                 variant="outline"
                 size="sm"
-                className="w-10 h-10 p-0 border-green-200 bg-green-50 hover:bg-green-100"
+                className="w-12 h-12 p-0 border-green-200 bg-green-50 hover:bg-green-100 rounded-xl transition-all duration-200 hover:shadow-md"
               >
-                <Search className="w-4 h-4 text-green-600" />
+                <Search className="w-5 h-5 text-green-600" />
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                className="w-10 h-10 p-0 border-green-200 bg-green-50 hover:bg-green-100"
+                className="w-12 h-12 p-0 border-green-200 bg-green-50 hover:bg-green-100 rounded-xl transition-all duration-200 hover:shadow-md"
               >
-                <List className="w-4 h-4 text-green-600" />
+                <List className="w-5 h-5 text-green-600" />
               </Button>
             </div>
           </div>
         </div>
 
         {/* Numeric Keypad */}
-        <div className="bg-white rounded-lg p-6 border border-gray-200">
-          <div className="grid grid-cols-3 gap-6">
+        <div className="bg-white rounded-xl p-6 border-0 shadow-lg shadow-gray-200/50">
+          <div className="grid grid-cols-3 gap-4">
             {keypadNumbers.map((row, rowIndex) => (
               row.map((key, colIndex) => (
                 <button
@@ -102,13 +102,13 @@ const PaymentScreen = () => {
                       handleNumberClick(key);
                     }
                   }}
-                  className={`h-20 rounded-lg font-semibold text-2xl transition-colors ${
+                  className={`h-16 rounded-xl font-semibold text-xl transition-all duration-200 ${
                     key === 'C' || key === '<'
-                      ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      : 'bg-gray-50 text-gray-900 hover:bg-gray-100'
+                      ? 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-md'
+                      : 'bg-gray-50 text-gray-900 hover:bg-gray-100 hover:shadow-md'
                   }`}
                 >
-                  {key === '<' ? <ChevronLeft className="w-8 h-8 mx-auto" /> : key}
+                  {key === '<' ? <ChevronLeft className="w-6 h-6 mx-auto" /> : key}
                 </button>
               ))
             ))}
@@ -117,9 +117,9 @@ const PaymentScreen = () => {
 
         {/* Action Button */}
         <Button
-          onClick={() => navigate('/pay/123')}
+          onClick={() => navigate(`/pay/123?amount=${amount}`)}
           disabled={amount === '0.00'}
-          className="w-full h-14 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold text-lg rounded-lg transition-all duration-200 shadow-lg hover:shadow-green-500/25 disabled:shadow-none"
+          className="w-full h-16 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white font-semibold text-lg rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-green-500/30 disabled:shadow-none transform hover:scale-[1.02] disabled:transform-none"
         >
           Initiate Payment
         </Button>
