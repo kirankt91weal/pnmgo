@@ -12,15 +12,31 @@ const LoginScreen = () => {
 
   // Force dark mode for login page - login should always be dark
   useEffect(() => {
+    // Store the current theme state before forcing dark
+    const originalTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    
     // Always force dark mode for login page
     document.documentElement.classList.add('dark');
     document.body.classList.add('dark');
     
-    // Override any light mode styles
+    // Override any light mode styles for login page only
     document.body.style.backgroundColor = '#111827';
     document.body.style.color = '#ffffff';
     
-    // No cleanup needed - login should always be dark
+    // Cleanup function to restore theme when leaving login
+    return () => {
+      // Remove the forced dark mode
+      document.body.classList.remove('dark');
+      document.body.style.backgroundColor = '';
+      document.body.style.color = '';
+      
+      // Restore the original theme
+      if (originalTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+      }
+    };
   }, []);
 
   const handleLogin = async (e) => {
@@ -37,13 +53,7 @@ const LoginScreen = () => {
   };
 
   return (
-    <div 
-      className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-6"
-      style={{
-        background: 'linear-gradient(135deg, #111827 0%, #1f2937 50%, #111827 100%)',
-        minHeight: '100vh'
-      }}
-    >
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-6">
       <div className="w-full max-w-sm">
         {/* Logo and Branding */}
         <div className="text-center mb-6">
