@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ChevronLeft, Search, List, DollarSign } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, Search, List, DollarSign, X } from 'lucide-react';
 import { Button } from './ui/button';
+import OrderLookupModal from './OrderLookupModal';
+import CatalogModal from './CatalogModal';
 
 const PaymentScreen = () => {
   const navigate = useNavigate();
   const [amount, setAmount] = useState('0.00');
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const [showCatalogModal, setShowCatalogModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedCatalog, setSelectedCatalog] = useState(null);
 
   const handleNumberClick = (num) => {
     // Convert current amount to cents (remove commas first)
@@ -35,6 +41,8 @@ const PaymentScreen = () => {
 
   const handleClear = () => {
     setAmount('0.00');
+    setSelectedOrder(null);
+    setSelectedCatalog(null);
   };
 
   const handleBackspace = () => {
@@ -46,6 +54,8 @@ const PaymentScreen = () => {
     // Convert back to dollars
     if (newCents === 0) {
       setAmount('0.00');
+      setSelectedOrder(null);
+      setSelectedCatalog(null);
     } else {
       const rawAmount = (newCents / 100).toFixed(2);
       // Add comma formatting
@@ -55,6 +65,28 @@ const PaymentScreen = () => {
       });
       setAmount(formattedAmount);
     }
+  };
+
+  const handleOrderSelect = (order) => {
+    setSelectedOrder(order);
+    setSelectedCatalog(null);
+    // Format the order amount
+    const formattedAmount = parseFloat(order.amount).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    setAmount(formattedAmount);
+  };
+
+  const handleCatalogComplete = (total) => {
+    setSelectedCatalog({ total });
+    setSelectedOrder(null);
+    // Format the catalog total
+    const formattedAmount = parseFloat(total).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    setAmount(formattedAmount);
   };
 
   const keypadNumbers = [
@@ -103,6 +135,42 @@ const PaymentScreen = () => {
                   <div className="absolute -top-1 -right-2 w-3 h-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full animate-pulse shadow-sm"></div>
                 )}
               </div>
+              {selectedOrder && (
+                <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-blue-800 dark:text-blue-200">{selectedOrder.orderNumber}</p>
+                      <p className="text-xs text-blue-600 dark:text-blue-300">{selectedOrder.customerName}</p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedOrder(null)}
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+              {selectedCatalog && (
+                <div className="mt-3 p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-emerald-800 dark:text-emerald-200">Service Catalog</p>
+                      <p className="text-xs text-emerald-600 dark:text-emerald-300">Parts & Labor</p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedCatalog(null)}
+                      className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-200"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -111,6 +179,7 @@ const PaymentScreen = () => {
         <div className="flex border border-slate-200 dark:border-gray-600 rounded-2xl overflow-hidden shadow-lg shadow-slate-200/20 dark:shadow-gray-900/20">
           <Button
             variant="outline"
+            onClick={() => setShowOrderModal(true)}
             className="flex-1 h-12 border-0 border-r border-slate-200 dark:border-gray-600 bg-gradient-to-r from-slate-50 to-white dark:from-gray-700 dark:to-gray-600 hover:from-slate-100 hover:to-slate-50 dark:hover:from-gray-600 dark:hover:to-gray-500 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200"
           >
             <Search className="w-4 h-4 mr-2 text-slate-600 dark:text-gray-400" />
@@ -118,6 +187,7 @@ const PaymentScreen = () => {
           </Button>
           <Button
             variant="outline"
+            onClick={() => setShowCatalogModal(true)}
             className="flex-1 h-12 border-0 border-l border-slate-200 dark:border-gray-600 bg-gradient-to-r from-slate-50 to-white dark:from-gray-700 dark:to-gray-600 hover:from-slate-100 hover:to-slate-50 dark:hover:from-gray-600 dark:hover:to-gray-500 hover:border-slate-300 dark:hover:border-gray-500 transition-all duration-200"
           >
             <List className="w-4 h-4 mr-2 text-slate-600 dark:text-gray-400" />
@@ -163,6 +233,20 @@ const PaymentScreen = () => {
           {amount === '0.00' ? 'Enter Amount' : `Pay $${amount}`}
         </Button>
       </div>
+
+      {/* Order Lookup Modal */}
+      <OrderLookupModal
+        isOpen={showOrderModal}
+        onClose={() => setShowOrderModal(false)}
+        onOrderSelect={handleOrderSelect}
+      />
+
+      {/* Catalog Modal */}
+      <CatalogModal
+        isOpen={showCatalogModal}
+        onClose={() => setShowCatalogModal(false)}
+        onCatalogComplete={handleCatalogComplete}
+      />
     </div>
   );
 };
