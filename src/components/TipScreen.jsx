@@ -19,9 +19,9 @@ const TipScreen = () => {
   
   const tipOptions = [
     { label: 'No Tip', value: 0, percentage: 0 },
-    { label: '10%', value: baseAmount * 0.1, percentage: 10 },
     { label: '15%', value: baseAmount * 0.15, percentage: 15 },
     { label: '20%', value: baseAmount * 0.2, percentage: 20 },
+    { label: '25%', value: baseAmount * 0.25, percentage: 25 },
     { label: 'Custom', value: 0, percentage: null }
   ];
 
