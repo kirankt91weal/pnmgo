@@ -118,6 +118,36 @@ const TransactionsScreen = () => {
     const transactions = [];
     const today = new Date();
     
+    // Sample data for orders, catalogs, and memos
+    const sampleOrders = [
+      { orderNumber: 'ORD-001', customerName: 'John Smith', customerNumber: 'CUST-001' },
+      { orderNumber: 'ORD-002', customerName: 'Sarah Johnson', customerNumber: 'CUST-002' },
+      { orderNumber: 'ORD-003', customerName: 'Mike Davis', customerNumber: 'CUST-003' },
+      { orderNumber: 'ORD-004', customerName: 'Emily Wilson', customerNumber: 'CUST-004' },
+      { orderNumber: 'ORD-005', customerName: 'David Brown', customerNumber: 'CUST-005' }
+    ];
+    
+    const sampleCatalogs = [
+      { total: '156.80', serviceType: 'Parts & Labor', category: 'Automotive' },
+      { total: '234.75', serviceType: 'Parts & Labor', category: 'Automotive' },
+      { total: '89.99', serviceType: 'Parts & Labor', category: 'Automotive' },
+      { total: '127.50', serviceType: 'Parts & Labor', category: 'Automotive' },
+      { total: '67.25', serviceType: 'Parts & Labor', category: 'Automotive' }
+    ];
+    
+    const sampleMemos = [
+      { text: '2023 Toyota Camry - ABC123' },
+      { text: '2019 Honda Civic - XYZ789' },
+      { text: '2021 Ford F-150 - DEF456' },
+      { text: '2020 Nissan Altima - GHI789' },
+      { text: '2022 Chevrolet Silverado - JKL012' },
+      { text: '2018 BMW 3 Series - MNO345' },
+      { text: '2021 Mercedes C-Class - PQR678' },
+      { text: '2019 Audi A4 - STU901' },
+      { text: '2020 Lexus RX - VWX234' },
+      { text: '2022 Tesla Model 3 - YZA567' }
+    ];
+    
     // Generate transactions for the last 7 days
     for (let day = 6; day >= 0; day--) {
       const currentDate = new Date(today);
@@ -140,6 +170,30 @@ const TransactionsScreen = () => {
         const minute = Math.floor(Math.random() * 60);
         const timeStr = `${hour}:${String(minute).padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`;
         
+        // Randomly add order, catalog, or memo (30% chance each, 10% chance none)
+        const itemType = Math.random();
+        let selectedItem = null;
+        
+        if (itemType < 0.3) {
+          // Add order
+          selectedItem = {
+            type: 'order',
+            data: sampleOrders[Math.floor(Math.random() * sampleOrders.length)]
+          };
+        } else if (itemType < 0.6) {
+          // Add catalog
+          selectedItem = {
+            type: 'catalog',
+            data: sampleCatalogs[Math.floor(Math.random() * sampleCatalogs.length)]
+          };
+        } else if (itemType < 0.9) {
+          // Add memo
+          selectedItem = {
+            type: 'memo',
+            data: sampleMemos[Math.floor(Math.random() * sampleMemos.length)]
+          };
+        }
+        
         transactions.push({
           id: transactions.length + 1,
           cardBrand,
@@ -150,7 +204,8 @@ const TransactionsScreen = () => {
           date: dateStr,
           amount: `$${amount}`,
           transactionId: `TXN-${String(transactions.length + 1).padStart(3, '0')}`,
-          time: timeStr
+          time: timeStr,
+          selectedItem
         });
       }
       
@@ -162,6 +217,27 @@ const TransactionsScreen = () => {
         const minute = Math.floor(Math.random() * 60);
         const timeStr = `${hour}:${String(minute).padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`;
         
+        // Randomly add order, catalog, or memo for declined transactions too
+        const itemType = Math.random();
+        let selectedItem = null;
+        
+        if (itemType < 0.3) {
+          selectedItem = {
+            type: 'order',
+            data: sampleOrders[Math.floor(Math.random() * sampleOrders.length)]
+          };
+        } else if (itemType < 0.6) {
+          selectedItem = {
+            type: 'catalog',
+            data: sampleCatalogs[Math.floor(Math.random() * sampleCatalogs.length)]
+          };
+        } else if (itemType < 0.9) {
+          selectedItem = {
+            type: 'memo',
+            data: sampleMemos[Math.floor(Math.random() * sampleMemos.length)]
+          };
+        }
+        
         transactions.push({
           id: transactions.length + 1,
           cardBrand,
@@ -172,7 +248,8 @@ const TransactionsScreen = () => {
           date: dateStr,
           amount: `$${amount}`,
           transactionId: `TXN-${String(transactions.length + 1).padStart(3, '0')}`,
-          time: timeStr
+          time: timeStr,
+          selectedItem
         });
       }
       
@@ -184,6 +261,27 @@ const TransactionsScreen = () => {
         const minute = Math.floor(Math.random() * 60);
         const timeStr = `${hour}:${String(minute).padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`;
         
+        // Randomly add order, catalog, or memo for refunded transactions too
+        const itemType = Math.random();
+        let selectedItem = null;
+        
+        if (itemType < 0.3) {
+          selectedItem = {
+            type: 'order',
+            data: sampleOrders[Math.floor(Math.random() * sampleOrders.length)]
+          };
+        } else if (itemType < 0.6) {
+          selectedItem = {
+            type: 'catalog',
+            data: sampleCatalogs[Math.floor(Math.random() * sampleCatalogs.length)]
+          };
+        } else if (itemType < 0.9) {
+          selectedItem = {
+            type: 'memo',
+            data: sampleMemos[Math.floor(Math.random() * sampleMemos.length)]
+          };
+        }
+        
         transactions.push({
           id: transactions.length + 1,
           cardBrand,
@@ -194,7 +292,8 @@ const TransactionsScreen = () => {
           date: dateStr,
           amount: `$${amount}`,
           transactionId: `TXN-${String(transactions.length + 1).padStart(3, '0')}`,
-          time: timeStr
+          time: timeStr,
+          selectedItem
         });
       }
     }
@@ -205,7 +304,24 @@ const TransactionsScreen = () => {
   const transactions = generateTransactions();
 
   const handleTransactionClick = (transaction) => {
-    navigate(`/confirm?amount=${transaction.amount}&transactionId=${transaction.transactionId}&from=transactions`);
+    // Build URL parameters with selected item data
+    const params = new URLSearchParams();
+    params.set('amount', transaction.amount);
+    params.set('transactionId', transaction.transactionId);
+    params.set('from', 'transactions');
+    
+    // Add selected item data if it exists
+    if (transaction.selectedItem) {
+      if (transaction.selectedItem.type === 'order') {
+        params.set('order', encodeURIComponent(JSON.stringify(transaction.selectedItem.data)));
+      } else if (transaction.selectedItem.type === 'catalog') {
+        params.set('catalog', encodeURIComponent(JSON.stringify(transaction.selectedItem.data)));
+      } else if (transaction.selectedItem.type === 'memo') {
+        params.set('memo', encodeURIComponent(JSON.stringify(transaction.selectedItem.data)));
+      }
+    }
+    
+    navigate(`/confirm?${params.toString()}`);
   };
 
   const handleCalendarSelect = (date) => {
