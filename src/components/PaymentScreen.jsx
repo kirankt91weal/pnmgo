@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Search, List, X, ChevronLeft } from 'lucide-react';
+import { ArrowLeft, Search, List, ChevronLeft } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 
@@ -16,8 +16,6 @@ const PaymentScreen = () => {
     // Convert back to dollars with 2 decimal places
     setAmount((newCents / 100).toFixed(2));
   };
-
-
 
   const handleClear = () => {
     setAmount('0.00');

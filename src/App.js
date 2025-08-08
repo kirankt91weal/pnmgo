@@ -12,7 +12,7 @@ function App() {
   return (
     <Router>
       <Layout>
-        <Routes>
+      <Routes>
           <Route path="/" element={<LoginScreen />} />
           <Route path="/home" element={<HomeScreen />} />
           <Route path="/lookup" element={<div className="p-8 text-center">Order Lookup Screen (Coming Soon)</div>} />
@@ -21,7 +21,7 @@ function App() {
           <Route path="/transactions" element={<div className="p-8 text-center">Transactions Screen (Coming Soon)</div>} />
           <Route path="/payment" element={<PaymentScreen />} />
           <Route path="/settings" element={<div className="p-8 text-center">Settings Screen (Coming Soon)</div>} />
-        </Routes>
+      </Routes>
       </Layout>
     </Router>
   );
