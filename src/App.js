@@ -6,6 +6,7 @@ import HomeScreen from "./components/HomeScreen";
 import PaymentScreen from "./components/PaymentScreen";
 import TapToPayScreen from "./components/TapToPayScreen";
 import ConfirmScreen from "./components/ConfirmScreen";
+import TransactionsScreen from "./components/TransactionsScreen";
 import Layout from "./components/Layout";
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
           <Route path="/lookup" element={<div className="p-8 text-center">Order Lookup Screen (Coming Soon)</div>} />
           <Route path="/pay/:orderId" element={<TapToPayScreen />} />
           <Route path="/confirm" element={<ConfirmScreen />} />
-          <Route path="/transactions" element={<div className="p-8 text-center">Transactions Screen (Coming Soon)</div>} />
+          <Route path="/transactions" element={<TransactionsScreen />} />
           <Route path="/payment" element={<PaymentScreen />} />
           <Route path="/settings" element={<div className="p-8 text-center">Settings Screen (Coming Soon)</div>} />
       </Routes>
