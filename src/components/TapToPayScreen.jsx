@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { X, ShoppingCart, CreditCard, SmartphoneNfc, Check } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { X, ShoppingCart, SmartphoneNfc, Check } from 'lucide-react';
 import { Button } from './ui/button';
 
 const TapToPayScreen = () => {
   const navigate = useNavigate();
-  const { orderId } = useParams();
   const location = useLocation();
   const [dots, setDots] = useState([]);
   const [showCheck, setShowCheck] = useState(false);
@@ -72,7 +71,7 @@ const TapToPayScreen = () => {
   const formatCardNumber = (value) => {
     const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
     const matches = v.match(/\d{4,16}/g);
-    const match = matches && matches[0] || '';
+    const match = (matches && matches[0]) || '';
     const parts = [];
     for (let i = 0, len = match.length; i < len; i += 4) {
       parts.push(match.substring(i, i + 4));

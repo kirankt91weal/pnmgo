@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Home, FileText, CreditCard, Settings, TrendingUp, DollarSign, Percent, Hash } from 'lucide-react';
+import { ArrowLeft, Hash, DollarSign, Percent, TrendingUp } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 

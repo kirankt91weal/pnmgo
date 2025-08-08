@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Zap, Shield } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { MapPin, Shield, Zap, CreditCard } from 'lucide-react';
+import { Card, CardContent } from './ui/card';
 
 const LoginScreen = () => {
   const [siteId, setSiteId] = useState('');
