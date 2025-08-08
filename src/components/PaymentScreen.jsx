@@ -264,7 +264,23 @@ const PaymentScreen = () => {
 
         {/* Premium Action Button */}
         <Button
-          onClick={() => navigate(`/pay/123?amount=${amount}`)}
+          onClick={() => {
+            // Build URL with selected items for TapToPayScreen
+            const params = new URLSearchParams();
+            params.set('amount', amount);
+            
+            if (selectedOrder) {
+              params.set('order', encodeURIComponent(JSON.stringify(selectedOrder)));
+            }
+            if (selectedCatalog) {
+              params.set('catalog', encodeURIComponent(JSON.stringify(selectedCatalog)));
+            }
+            if (selectedMemo) {
+              params.set('memo', encodeURIComponent(JSON.stringify(selectedMemo)));
+            }
+            
+            navigate(`/pay/123?${params.toString()}`);
+          }}
           disabled={amount === '0.00'}
           className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-300 disabled:to-slate-400 disabled:cursor-not-allowed text-white font-semibold text-lg rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/30 disabled:shadow-none transform hover:scale-[1.01] disabled:transform-none"
         >

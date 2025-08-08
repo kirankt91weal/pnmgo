@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { X, FileText } from 'lucide-react';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Card, CardContent } from './ui/card';
 
 const MemoModal = ({ isOpen, onClose, onMemoComplete }) => {
   const [memoText, setMemoText] = useState('');
