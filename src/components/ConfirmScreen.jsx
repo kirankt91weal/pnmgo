@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCcVisa, faCcMastercard, faCcAmex, faCcDiscover } from '@fortawesome/free-brands-svg-icons';
 import { faBuildingColumns } from '@fortawesome/free-solid-svg-icons';
 import ScanModal from './ScanModal';
+import VenmoIcon from './VenmoIcon'; // Added VenmoIcon import
 
 const ConfirmScreen = () => {
   const navigate = useNavigate();
@@ -212,6 +213,8 @@ const ConfirmScreen = () => {
                 <div className="col-span-3 text-center">
                   {paymentMethod === 'ach' ? (
                     <span className="text-sm text-gray-600 dark:text-gray-400">{randomBank} - Checking</span>
+                  ) : paymentMethod === 'venmo' ? (
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Venmo - Social Payment</span>
                   ) : (
                     <span className="text-sm text-gray-600 dark:text-gray-400">Citi Bank - Debit</span>
                   )}
@@ -221,6 +224,11 @@ const ConfirmScreen = () => {
                     <>
                       <FontAwesomeIcon icon={faBuildingColumns} className="w-4 h-4 text-emerald-600 dark:text-white" />
                       <span className="text-sm text-gray-600 dark:text-gray-400">{accountNumber}</span>
+                    </>
+                  ) : paymentMethod === 'venmo' ? (
+                    <>
+                      <VenmoIcon className="w-4 h-4 text-blue-500" />
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Venmo</span>
                     </>
                   ) : (
                     <>

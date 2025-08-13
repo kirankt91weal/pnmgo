@@ -8,6 +8,7 @@ import PaymentMethodScreen from "./components/PaymentMethodScreen";
 import TapToPayScreen from "./components/TapToPayScreen";
 import ACHPaymentScreen from "./components/ACHPaymentScreen";
 import CashAppPaymentScreen from "./components/CashAppPaymentScreen";
+import VenmoPaymentScreen from "./components/VenmoPaymentScreen";
 import TipScreen from "./components/TipScreen";
 import ConfirmScreen from "./components/ConfirmScreen";
 import TransactionsScreen from "./components/TransactionsScreen";
@@ -36,6 +37,7 @@ function App() {
           <Route path="/tap-to-pay" element={<TapToPayScreen />} />
           <Route path="/ach-payment" element={<ACHPaymentScreen />} />
           <Route path="/cashapp-payment" element={<CashAppPaymentScreen />} />
+          <Route path="/venmo-payment" element={<VenmoPaymentScreen />} />
           <Route path="/tip" element={<TipScreen />} />
           <Route path="/confirm" element={<ConfirmScreen />} />
           <Route path="/transactions" element={<TransactionsScreen />} />

@@ -2,23 +2,21 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Building2, Smartphone, Wallet, CreditCard, DollarSign } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faCcApplePay, 
-  faCcPaypal, 
-  faGooglePay,
+import {
+  faCcApplePay,
   faCashApp
 } from '@fortawesome/free-brands-svg-icons';
-import { 
+import {
   faBuildingColumns
 } from '@fortawesome/free-solid-svg-icons';
 import { Button } from './ui/button';
 
 // Venmo Icon Component
 const VenmoIcon = ({ className = "w-6 h-6" }) => (
-  <svg 
-    width="24" 
-    height="24" 
-    viewBox="0 0 512 512" 
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 512 512"
     className={className}
     fill="currentColor"
   >
@@ -29,7 +27,7 @@ const VenmoIcon = ({ className = "w-6 h-6" }) => (
 const PaymentMethodScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Get parameters from URL
   const urlParams = new URLSearchParams(location.search);
   const amount = urlParams.get('amount') || '$0.00';
@@ -65,28 +63,12 @@ const PaymentMethodScreen = () => {
       bgColor: 'bg-emerald-500'
     },
     {
-      id: 'paypal',
-      name: 'PayPal',
-      description: 'Digital Wallet',
-      icon: faCcPaypal,
-      color: 'from-blue-400 via-blue-500 to-indigo-500',
-      bgColor: 'bg-blue-400'
-    },
-    {
       id: 'venmo',
       name: 'Venmo',
       description: 'Social Payment',
       icon: VenmoIcon,
       color: 'from-blue-500 via-blue-600 to-indigo-600',
       bgColor: 'bg-blue-500'
-    },
-    {
-      id: 'google-pay',
-      name: 'Google Pay',
-      description: 'Digital Wallet',
-      icon: faGooglePay,
-      color: 'from-red-500 via-red-600 to-pink-600',
-      bgColor: 'bg-red-500'
     }
   ];
 
@@ -94,7 +76,7 @@ const PaymentMethodScreen = () => {
     // Build URL with all existing parameters
     const params = new URLSearchParams();
     params.set('amount', amount);
-    
+
     if (selectedOrder) params.set('order', selectedOrder);
     if (selectedCatalog) params.set('catalog', selectedCatalog);
     if (selectedMemo) params.set('memo', selectedMemo);
@@ -111,14 +93,8 @@ const PaymentMethodScreen = () => {
       case 'cashapp':
         navigate(`/cashapp-payment?${params.toString()}`);
         break;
-      case 'paypal':
-        navigate(`/paypal-payment?${params.toString()}`);
-        break;
       case 'venmo':
         navigate(`/venmo-payment?${params.toString()}`);
-        break;
-      case 'google-pay':
-        navigate(`/google-pay-payment?${params.toString()}`);
         break;
       default:
         navigate(`/tap-to-pay?${params.toString()}`);
@@ -179,7 +155,7 @@ const PaymentMethodScreen = () => {
           {paymentMethods.map((method) => {
             // Check if it's a Font Awesome icon or Lucide icon
             const isFontAwesome = typeof method.icon === 'string' || method.icon?.iconName;
-            
+
             return (
               <button
                 key={method.id}
@@ -188,14 +164,14 @@ const PaymentMethodScreen = () => {
               >
                 {/* Background Gradient on Hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${method.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-2xl`}></div>
-                
+
                 {/* Popular Badge */}
                 {method.popular && (
                   <div className="absolute top-2 right-2 bg-gradient-to-r from-orange-400 to-pink-500 text-white text-xs px-1.5 py-0.5 rounded-full font-semibold shadow-lg transform scale-90">
                     Fast
                   </div>
                 )}
-                
+
                 <div className="relative flex flex-col items-center space-y-3">
                   <div className={`w-12 h-12 ${method.bgColor} rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}>
                     {isFontAwesome ? (
@@ -216,6 +192,36 @@ const PaymentMethodScreen = () => {
               </button>
             );
           })}
+        </div>
+
+        {/* PayNearMe QR Code Section */}
+        <div className="mt-6">
+          <div className="w-full bg-white dark:bg-gray-800 rounded-2xl border border-slate-200/40 dark:border-gray-700/40 shadow-lg p-4">
+            <div className="grid grid-cols-2 gap-4 items-center">
+              {/* Left Column - QR Code */}
+              <div className="flex justify-center">
+                <div className="w-24 h-24 bg-white rounded-xl flex items-center justify-center">
+                  <img 
+                    src="/paynearme-qr.png" 
+                    alt="PayNearMe QR Code"
+                    className="w-full h-full rounded-xl object-contain"
+                  />
+                </div>
+              </div>
+              
+              {/* Right Column - Logo and Text */}
+              <div className="flex flex-col items-center justify-center space-y-3">
+                <img 
+                  src="/logo-top.png" 
+                  alt="PayNearMe Logo"
+                  className="w-auto h-auto max-h-8"
+                />
+                <p className="text-sm text-slate-600 dark:text-gray-400 text-center">
+                  Scan for more payment options
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
