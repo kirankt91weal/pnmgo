@@ -432,6 +432,9 @@ const TransactionsScreen = () => {
     params.set('amount', transaction.amount);
     params.set('transactionId', transaction.transactionId);
     params.set('from', 'transactions');
+    params.set('status', transaction.status.toLowerCase()); // Add status parameter
+    params.set('method', transaction.paymentMethod.type); // Add payment method
+    params.set('lastFour', transaction.lastFour); // Add last four digits
     
     // Add selected item data if it exists
     if (transaction.selectedItem) {

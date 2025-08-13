@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Check, Plus, MessageCircle, X, Share, FileText, Building2 } from 'lucide-react';
+import { ArrowLeft, Check, Plus, MessageCircle, X, Share, FileText, Building2, RotateCcw } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,12 +14,12 @@ const ConfirmScreen = () => {
   const location = useLocation();
   
   // State for receipt sharing modal
+  const [showScanModal, setShowScanModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [isClosingModal, setIsClosingModal] = useState(false);
   const [shareContacts, setShareContacts] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [showScanModal, setShowScanModal] = useState(false);
+  const [isClosingModal, setIsClosingModal] = useState(false);
   
   // Get amount from URL parameters
   const urlParams = new URLSearchParams(location.search);
@@ -28,6 +28,9 @@ const ConfirmScreen = () => {
   const fromTransactions = urlParams.get('from') === 'transactions';
   const paymentMethod = urlParams.get('method') || 'card';
   const accountNumber = urlParams.get('accountNumber') || '';
+  const status = urlParams.get('status') || 'complete';
+  const transactionId = urlParams.get('transactionId') || '';
+  const lastFour = urlParams.get('lastFour') || '';
   
   // Debug the actual URL and search params
   console.log('Debug ConfirmScreen URL:', {
@@ -36,9 +39,9 @@ const ConfirmScreen = () => {
     allParams: Array.from(urlParams.entries())
   });
   
-  // Auto-open modal for new payments (not from transactions view)
+  // Auto-open modal for new payments (not from transactions view and not refunded)
   React.useEffect(() => {
-    if (!fromTransactions) {
+    if (!fromTransactions && status !== 'refunded') {
       // Small delay to ensure the page is fully loaded
       const timer = setTimeout(() => {
         setShowShareModal(true);
@@ -46,7 +49,7 @@ const ConfirmScreen = () => {
       
       return () => clearTimeout(timer);
     }
-  }, [fromTransactions]);
+  }, [fromTransactions, status]);
 
 
   
@@ -102,7 +105,7 @@ const ConfirmScreen = () => {
     }
   ];
   const randomCard = cardBrands[Math.floor(Math.random() * cardBrands.length)];
-  const lastFour = Math.floor(Math.random() * 9000) + 1000; // Random 4-digit number
+  const displayLastFour = lastFour || String(Math.floor(Math.random() * 9000) + 1000); // Use URL param or generate random
   
   // Randomize bank names for ACH transfers
   const bankNames = [
@@ -135,6 +138,15 @@ const ConfirmScreen = () => {
     setShowShareModal(true);
   };
 
+  const handleCancelShare = () => {
+    setIsClosingModal(true);
+    setTimeout(() => {
+      setShowShareModal(false);
+      setIsClosingModal(false);
+      setShareContacts('');
+    }, 200);
+  };
+
   const handleSendReceipt = async () => {
     if (!shareContacts.trim()) return;
     
@@ -152,15 +164,6 @@ const ConfirmScreen = () => {
       setShowShareModal(false);
       setShareContacts('');
     }, 2000);
-  };
-
-  const handleCancelShare = () => {
-    setIsClosingModal(true);
-    setTimeout(() => {
-      setShowShareModal(false);
-      setIsClosingModal(false);
-      setShareContacts('');
-    }, 200);
   };
 
   return (
@@ -206,12 +209,20 @@ const ConfirmScreen = () => {
             <CardContent className="p-4">
               <div className="grid grid-cols-5 gap-4">
                 <div className="flex items-center justify-center">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                    <Check className="w-4 h-4 text-white" />
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                    status === 'refunded' ? 'bg-blue-600' : 'bg-blue-600'
+                  }`}>
+                    {status === 'refunded' ? (
+                      <RotateCcw className="w-4 h-4 text-white" />
+                    ) : (
+                      <Check className="w-4 h-4 text-white" />
+                    )}
                   </div>
                 </div>
                 <div className="col-span-3 text-center">
-                  {paymentMethod === 'ach' ? (
+                  {status === 'refunded' ? (
+                    <span className="text-sm text-blue-600 dark:text-blue-400 font-medium">Refunded</span>
+                  ) : paymentMethod === 'ach' ? (
                     <span className="text-sm text-gray-600 dark:text-gray-400">{randomBank} - Checking</span>
                   ) : paymentMethod === 'venmo' ? (
                     <span className="text-sm text-gray-600 dark:text-gray-400">Venmo - Social Payment</span>
@@ -220,7 +231,9 @@ const ConfirmScreen = () => {
                   )}
                 </div>
                 <div className="flex items-center justify-end space-x-1">
-                  {paymentMethod === 'ach' ? (
+                  {status === 'refunded' ? (
+                    <span className="text-sm text-blue-600 dark:text-blue-400 font-medium">-{amount}</span>
+                  ) : paymentMethod === 'ach' ? (
                     <>
                       <FontAwesomeIcon icon={faBuildingColumns} className="w-4 h-4 text-emerald-600 dark:text-white" />
                       <span className="text-sm text-gray-600 dark:text-gray-400">{accountNumber}</span>
@@ -233,7 +246,7 @@ const ConfirmScreen = () => {
                   ) : (
                     <>
                       <span className={`${randomCard.color} dark:text-gray-300`}>{randomCard.icon}</span>
-                      <span className="text-sm text-gray-600 dark:text-gray-400">{lastFour}</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">{displayLastFour}</span>
                     </>
                   )}
                 </div>
@@ -377,18 +390,33 @@ const ConfirmScreen = () => {
 
         {/* Action Buttons */}
         <div className="space-y-3">
-          <Button
-            onClick={() => navigate('/payment')}
-            className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold text-lg rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/30 transform hover:scale-[1.02]"
-          >
-            <Plus className="w-5 h-5 mr-3" />
-            New Payment
-          </Button>
+          {/* Only show refund button for successful payments (not failed or refunded) */}
+          {status !== 'refunded' && status !== 'declined' && (
+            <Button
+              onClick={() => {
+                const params = new URLSearchParams();
+                params.set('amount', amount);
+                params.set('method', paymentMethod);
+                params.set('transactionId', `TXN-${Math.floor(Math.random() * 900) + 100}`);
+                params.set('lastFour', displayLastFour);
+                
+                if (selectedOrder) params.set('order', encodeURIComponent(JSON.stringify(selectedOrder)));
+                if (selectedCatalog) params.set('catalog', encodeURIComponent(JSON.stringify(selectedCatalog)));
+                if (selectedMemo) params.set('memo', encodeURIComponent(JSON.stringify(selectedMemo)));
+                if (scannedData) params.set('scanned', encodeURIComponent(JSON.stringify(scannedData)));
+                
+                navigate(`/refund?${params.toString()}`);
+              }}
+              className="w-full bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 hover:from-blue-600 hover:via-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+            >
+              Refund
+            </Button>
+          )}
         </div>
       </div>
 
-      {/* Receipt Sharing Modal */}
-      {showShareModal && (
+      {/* Receipt Sharing Modal - Only show for non-refunded payments */}
+      {showShareModal && status !== 'refunded' && (
         <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 transition-all duration-300 ${
           isClosingModal ? 'opacity-0' : 'opacity-100'
         }`}>
@@ -503,4 +531,4 @@ const ConfirmScreen = () => {
   );
 };
 
-export default ConfirmScreen; 
+export default ConfirmScreen;
