@@ -1,6 +1,13 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, SmartphoneNfc, Building2, Smartphone, Wallet, CreditCard } from 'lucide-react';
+import { ArrowLeft, Building2, Smartphone, Wallet, CreditCard, DollarSign } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faCcApplePay, 
+  faCcPaypal, 
+  faGooglePay,
+  faCashApp
+} from '@fortawesome/free-brands-svg-icons';
 import { Button } from './ui/button';
 
 const PaymentMethodScreen = () => {
@@ -20,55 +27,50 @@ const PaymentMethodScreen = () => {
       id: 'tap-to-pay',
       name: 'Tap to Pay',
       description: 'Credit & Debit Cards',
-      icon: SmartphoneNfc,
-      color: 'from-blue-500 to-blue-600',
-      bgColor: 'bg-blue-500',
-      action: 'Hold Here to Pay'
+      icon: faCcApplePay,
+      color: 'from-gray-900 via-gray-800 to-black',
+      bgColor: 'bg-black',
+      popular: true
     },
     {
       id: 'ach',
       name: 'ACH Transfer',
       description: 'Bank Account',
       icon: Building2,
-      color: 'from-green-500 to-green-600',
-      bgColor: 'bg-green-500',
-      action: 'Enter Account Details'
+      color: 'from-emerald-500 via-emerald-600 to-teal-600',
+      bgColor: 'bg-emerald-500'
     },
     {
       id: 'cashapp',
       name: 'Cash App Pay',
       description: 'Mobile Payment',
-      icon: Smartphone,
-      color: 'from-emerald-500 to-emerald-600',
-      bgColor: 'bg-emerald-500',
-      action: 'Scan QR Code'
+      icon: faCashApp,
+      color: 'from-emerald-500 via-emerald-600 to-teal-600',
+      bgColor: 'bg-emerald-500'
     },
     {
       id: 'paypal',
       name: 'PayPal',
       description: 'Digital Wallet',
-      icon: Wallet,
-      color: 'from-blue-400 to-blue-500',
-      bgColor: 'bg-blue-400',
-      action: 'Sign In to PayPal'
+      icon: faCcPaypal,
+      color: 'from-blue-400 via-blue-500 to-indigo-500',
+      bgColor: 'bg-blue-400'
     },
     {
       id: 'venmo',
       name: 'Venmo',
       description: 'Social Payment',
       icon: Smartphone,
-      color: 'from-blue-500 to-blue-600',
-      bgColor: 'bg-blue-500',
-      action: 'Sign In to Venmo'
+      color: 'from-blue-500 via-blue-600 to-indigo-600',
+      bgColor: 'bg-blue-500'
     },
     {
-      id: 'key-in',
-      name: 'Key In Card',
-      description: 'Manual Entry',
-      icon: CreditCard,
-      color: 'from-slate-500 to-slate-600',
-      bgColor: 'bg-slate-500',
-      action: 'Enter Card Details'
+      id: 'google-pay',
+      name: 'Google Pay',
+      description: 'Digital Wallet',
+      icon: faGooglePay,
+      color: 'from-red-500 via-red-600 to-pink-600',
+      bgColor: 'bg-red-500'
     }
   ];
 
@@ -99,8 +101,8 @@ const PaymentMethodScreen = () => {
       case 'venmo':
         navigate(`/venmo-payment?${params.toString()}`);
         break;
-      case 'key-in':
-        navigate(`/key-in-payment?${params.toString()}`);
+      case 'google-pay':
+        navigate(`/google-pay-payment?${params.toString()}`);
         break;
       default:
         navigate(`/tap-to-pay?${params.toString()}`);
@@ -116,65 +118,83 @@ const PaymentMethodScreen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col">
       {/* Header */}
-      <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-b border-slate-200/60 dark:border-gray-700/60 px-6 py-4 flex items-center justify-between shadow-sm">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate('/payment')}
-          className="p-2 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200"
-        >
-          <ArrowLeft className="w-5 h-5 text-slate-700 dark:text-gray-300" />
-        </Button>
-        <h1 className="text-lg font-semibold text-slate-700 dark:text-gray-200 tracking-wide">Choose Payment Method</h1>
-        <div className="w-10"></div>
+      <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border-b border-slate-200/30 dark:border-gray-700/30 px-6 py-5 flex-shrink-0">
+        <div className="flex items-center justify-between">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/payment')}
+            className="p-2.5 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-2xl transition-all duration-200 group"
+          >
+            <ArrowLeft className="w-5 h-5 text-slate-600 dark:text-gray-300 group-hover:text-slate-800 dark:group-hover:text-gray-100 transition-colors" />
+          </Button>
+          <div className="text-center">
+            <h1 className="text-xl font-semibold text-slate-800 dark:text-gray-100 tracking-tight">Payment Method</h1>
+            <p className="text-sm text-slate-500 dark:text-gray-400 mt-1">Select how to process payment</p>
+          </div>
+          <div className="w-10"></div>
+        </div>
       </div>
 
-      <div className="p-4 space-y-4">
+      {/* Content */}
+      <div className="flex-1 px-6 py-4 flex flex-col">
         {/* Amount Display */}
-        <div className="bg-gradient-to-br from-white to-slate-50 dark:from-gray-800 dark:to-gray-700 rounded-3xl p-4 border border-slate-200/50 dark:border-gray-600/50 shadow-lg shadow-slate-200/20 dark:shadow-gray-900/20">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <div className="flex items-center space-x-2 mb-2">
-                <div className="w-6 h-6 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">$</span>
-                </div>
-                <p className="text-sm text-slate-600 dark:text-gray-400 font-semibold uppercase tracking-wider">Payment Amount</p>
-              </div>
-              <div className="relative">
-                <span className={`font-light text-slate-900 dark:text-gray-100 tracking-tight ${
-                  amount.length > 8 ? 'text-3xl' : 
-                  amount.length > 6 ? 'text-4xl' : 'text-5xl'
-                }`}>${formatAmount(amount)}</span>
-                <div className="absolute -top-1 -right-2 w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full animate-pulse shadow-sm"></div>
-              </div>
+        <div className="text-center mb-6">
+          <div className="relative inline-block">
+            <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 rounded-2xl shadow-2xl shadow-emerald-500/30 flex items-center justify-center mb-3">
+              <span className="text-white text-xl font-bold">$</span>
+            </div>
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full animate-pulse shadow-lg"></div>
+          </div>
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">Transaction Amount</p>
+            <div className="relative inline-block">
+              <span className="text-4xl font-light text-slate-800 dark:text-gray-100 tracking-tight">
+                {formatAmount(amount)}
+              </span>
             </div>
           </div>
         </div>
 
         {/* Payment Methods Grid */}
-        <div className="space-y-3">
+        <div className="grid grid-cols-2 gap-3">
           {paymentMethods.map((method) => {
-            const IconComponent = method.icon;
+            // Check if it's a Font Awesome icon or Lucide icon
+            const isFontAwesome = typeof method.icon === 'string' || method.icon?.iconName;
+            
             return (
               <button
                 key={method.id}
                 onClick={() => handlePaymentMethodSelect(method)}
-                className="w-full bg-gradient-to-br from-white to-slate-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-4 border border-slate-200/50 dark:border-gray-600/50 shadow-lg shadow-slate-200/20 dark:shadow-gray-900/20 hover:shadow-xl hover:shadow-slate-200/30 dark:hover:shadow-gray-900/30 transition-all duration-200 group"
+                className="group relative w-full bg-white dark:bg-gray-800 rounded-2xl p-4 border border-slate-200/40 dark:border-gray-700/40 hover:border-slate-300 dark:hover:border-gray-600 hover:shadow-xl hover:shadow-slate-200/30 dark:hover:shadow-gray-900/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] overflow-hidden"
               >
-                <div className="flex items-center space-x-4">
-                  <div className={`w-12 h-12 ${method.bgColor} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200 shadow-lg`}>
-                    <IconComponent className="w-6 h-6 text-white" />
+                {/* Background Gradient on Hover */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${method.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-2xl`}></div>
+                
+                {/* Popular Badge */}
+                {method.popular && (
+                  <div className="absolute top-2 right-2 bg-gradient-to-r from-orange-400 to-pink-500 text-white text-xs px-1.5 py-0.5 rounded-full font-semibold shadow-lg transform scale-90">
+                    Fast
                   </div>
-                  <div className="flex-1 text-left">
-                    <h3 className="text-slate-900 dark:text-gray-100 font-semibold text-lg">{method.name}</h3>
-                    <p className="text-slate-600 dark:text-gray-400 text-sm">{method.description}</p>
+                )}
+                
+                <div className="relative flex flex-col items-center space-y-3">
+                  <div className={`w-12 h-12 ${method.bgColor} rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}>
+                    {isFontAwesome ? (
+                      <FontAwesomeIcon icon={method.icon} className="w-6 h-6 text-white" />
+                    ) : (
+                      <method.icon className="w-6 h-6 text-white" />
+                    )}
                   </div>
-                  <div className="text-slate-400 dark:text-gray-500 group-hover:text-slate-600 dark:group-hover:text-gray-300 transition-colors duration-200">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                  <div className="text-center">
+                    <h3 className="text-slate-900 dark:text-gray-100 font-semibold text-sm group-hover:text-slate-700 dark:group-hover:text-gray-50 transition-colors">
+                      {method.name}
+                    </h3>
+                    <p className="text-slate-500 dark:text-gray-400 text-xs group-hover:text-slate-600 dark:group-hover:text-gray-300 transition-colors mt-1 leading-relaxed">
+                      {method.description}
+                    </p>
                   </div>
                 </div>
               </button>
