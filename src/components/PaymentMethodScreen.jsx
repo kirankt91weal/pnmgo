@@ -159,8 +159,8 @@ const PaymentMethodScreen = () => {
         {/* Amount Display */}
         <div className="text-center mb-6">
           <div className="relative inline-block">
-            <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 rounded-2xl shadow-2xl shadow-emerald-500/30 flex items-center justify-center mb-3">
-              <span className="text-white text-xl font-bold">$</span>
+            <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl shadow-2xl shadow-emerald-500/30 flex items-center justify-center mb-3">
+              <DollarSign className="w-8 h-8 text-white" />
             </div>
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full animate-pulse shadow-lg"></div>
           </div>
