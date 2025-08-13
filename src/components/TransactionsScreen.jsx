@@ -2,10 +2,24 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, Check, ChevronRight, X, RotateCcw, CreditCard, AlertCircle, RefreshCw, ChevronLeft, Building2, Smartphone } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCcVisa, faCcMastercard, faCcAmex, faCcDiscover } from '@fortawesome/free-brands-svg-icons';
+import { faCcVisa, faCcMastercard, faCcAmex, faCcDiscover, faCashApp } from '@fortawesome/free-brands-svg-icons';
+import { faBuildingColumns } from '@fortawesome/free-solid-svg-icons';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { getOrderOptionEnabled, getCatalogOptionEnabled, getMemoEnabled, getScanOptionEnabled } from '../lib/settings';
+
+// Venmo Icon Component
+const VenmoIcon = ({ className = "w-6 h-6" }) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 512 512"
+    className={className}
+    fill="currentColor"
+  >
+    <path d="M444.17,32H70.28C49.85,32,32,46.7,32,66.89V441.6C32,461.91,49.85,480,70.28,480H444.06C464.6,480,480,461.8,480,441.61V66.89C480.12,46.7,464.6,32,444.17,32ZM278,387H174.32L132.75,138.44l90.75-8.62,22,176.87c20.53-33.45,45.88-86,45.88-121.87,0-19.62-3.36-33-8.61-44L365.4,124.1c9.56,15.78,13.86,32,13.86,52.57C379.25,242.17,323.34,327.26,278,387Z"/>
+  </svg>
+);
 
 const TransactionsScreen = () => {
   const navigate = useNavigate();
@@ -811,11 +825,11 @@ const TransactionsScreen = () => {
                                 className={`h-6 w-6 ${transaction.paymentMethod.icon.color} dark:text-gray-300`}
                               />
                             ) : transaction.paymentMethod.type === 'ach' ? (
-                              <Building2 className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                              <FontAwesomeIcon icon={faBuildingColumns} className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
                             ) : transaction.paymentMethod.type === 'cashapp' ? (
-                              <Smartphone className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                              <FontAwesomeIcon icon={faCashApp} className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
                             ) : transaction.paymentMethod.type === 'venmo' ? (
-                              <Smartphone className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                              <VenmoIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                             ) : (
                               <CreditCard className="h-6 w-6 text-gray-600 dark:text-gray-400" />
                             )}
