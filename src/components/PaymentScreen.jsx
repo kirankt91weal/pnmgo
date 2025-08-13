@@ -101,6 +101,7 @@ const PaymentScreen = () => {
   };
 
   const handleScanComplete = (data) => {
+    console.log('Debug PaymentScreen handleScanComplete called with:', data);
     setScannedData(data);
     // Automatically set the amount from the scanned down payment data
     if (data.downPayment) {
@@ -117,6 +118,7 @@ const PaymentScreen = () => {
     setSelectedOrder(null);
     setSelectedCatalog(null);
     setMemoText('');
+    console.log('Debug PaymentScreen after handleScanComplete - scannedData:', data, 'amount:', data.downPayment);
   };
 
 
@@ -333,9 +335,6 @@ const PaymentScreen = () => {
             const cleanAmount = amount.replace(/,/g, '');
             params.set('amount', cleanAmount);
             
-            // Debug logging to see what's being passed
-            console.log('Debug PaymentScreen amount:', { amount, cleanAmount, params: params.toString() });
-            
             if (selectedOrder) {
               params.set('order', encodeURIComponent(JSON.stringify(selectedOrder)));
             }
@@ -348,6 +347,10 @@ const PaymentScreen = () => {
             if (memoText.trim()) {
               params.set('memo', encodeURIComponent(JSON.stringify({ text: memoText.trim() })));
             }
+            
+            // Debug logging to see what's being passed (AFTER all parameters are set)
+            console.log('Debug PaymentScreen final params:', { amount, cleanAmount, scannedData, finalParams: params.toString() });
+            console.log('Debug PaymentScreen scannedData state at click:', scannedData);
             
             // Check tipping setting to determine navigation
             if (getTippingEnabled()) {
@@ -388,8 +391,14 @@ const PaymentScreen = () => {
       {getScanOptionEnabled() && (
         <ScanModal
           isOpen={showScanModal}
-          onClose={() => setShowScanModal(false)}
-          onScanComplete={handleScanComplete}
+          onClose={() => {
+            console.log('Debug PaymentScreen: ScanModal onClose called');
+            setShowScanModal(false);
+          }}
+          onScanComplete={(data) => {
+            console.log('Debug PaymentScreen: ScanModal onScanComplete called with:', data);
+            handleScanComplete(data);
+          }}
           existingData={scannedData}
         />
       )}

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Check, Plus, Mail, MessageCircle, X } from 'lucide-react';
+import { ArrowLeft, Check, Plus, MessageCircle, X, Share, FileText } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCcVisa, faCcMastercard, faCcAmex, faCcDiscover } from '@fortawesome/free-brands-svg-icons';
+import ScanModal from './ScanModal';
 
 const ConfirmScreen = () => {
   const navigate = useNavigate();
@@ -16,12 +17,20 @@ const ConfirmScreen = () => {
   const [shareContacts, setShareContacts] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showScanModal, setShowScanModal] = useState(false);
   
   // Get amount from URL parameters
   const urlParams = new URLSearchParams(location.search);
   const rawAmount = urlParams.get('amount') || '150.00';
   const tipAmount = parseFloat(urlParams.get('tip') || '0');
   const fromTransactions = urlParams.get('from') === 'transactions';
+  
+  // Debug the actual URL and search params
+  console.log('Debug ConfirmScreen URL:', {
+    fullURL: window.location.href,
+    search: location.search,
+    allParams: Array.from(urlParams.entries())
+  });
   
   // Auto-open modal for new payments (not from transactions view)
   React.useEffect(() => {
@@ -41,6 +50,14 @@ const ConfirmScreen = () => {
   const selectedOrder = urlParams.get('order') ? JSON.parse(decodeURIComponent(urlParams.get('order'))) : null;
   const selectedCatalog = urlParams.get('catalog') ? JSON.parse(decodeURIComponent(urlParams.get('catalog'))) : null;
   const selectedMemo = urlParams.get('memo') ? JSON.parse(decodeURIComponent(urlParams.get('memo'))) : null;
+  const scannedData = urlParams.get('scanned') ? JSON.parse(decodeURIComponent(urlParams.get('scanned'))) : null;
+  
+  // Debug URL parsing
+  console.log('Debug URL params:', {
+    rawScanned: urlParams.get('scanned'),
+    decodedScanned: urlParams.get('scanned') ? decodeURIComponent(urlParams.get('scanned')) : null,
+    parsedScanned: scannedData
+  });
   
   // Clean the amount and ensure proper formatting
   const cleanAmount = rawAmount.replace(/^\$+/, '').replace(/,/g, ''); // Remove any existing $ symbols and commas
@@ -49,6 +66,8 @@ const ConfirmScreen = () => {
   
   // Debug logging to see what's happening
   console.log('Debug amount parsing:', { rawAmount, cleanAmount, baseAmount, amount });
+  console.log('Debug scanned data:', { scannedData, hasScannedData: !!scannedData });
+  console.log('Debug all data:', { selectedOrder, selectedCatalog, selectedMemo, scannedData });
   
   // Calculate service fee and total
   const paymentAmount = baseAmount;
@@ -149,11 +168,19 @@ const ConfirmScreen = () => {
         {/* Payment Summary */}
         <div className="space-y-3">
           {/* Large Amount Card */}
-          <Card className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 border-0 shadow-lg shadow-gray-200/50 dark:shadow-gray-900/50">
+          <Card className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 border-0 shadow-lg shadow-gray-200/50 dark:shadow-gray-900/50 relative">
             <CardContent className="p-8">
               <div className="text-center">
                 <p className="text-4xl font-bold text-gray-700 dark:text-gray-100 tracking-tight">{amount}</p>
               </div>
+              {/* Share Receipt Link - Top Right */}
+              <button
+                onClick={handleShareReceipt}
+                className="absolute top-2 right-2 flex items-center space-x-1 text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition-colors duration-200"
+              >
+                <Share className="w-4 h-4" />
+                <span className="text-sm font-medium">Receipt</span>
+              </button>
             </CardContent>
           </Card>
 
@@ -198,7 +225,7 @@ const ConfirmScreen = () => {
               )}
               <div className="flex justify-between items-center border-t border-gray-200 dark:border-gray-700 pt-3">
                 <span className="font-bold text-gray-700 dark:text-gray-200">Total:</span>
-                <span className="font-bold text-gray-700 dark:text-gray-200">${total.toFixed(2)}</span>
+                <span className="font-bold text-gray-700 dark:text-gray-200">${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
             </div>
           </CardContent>
@@ -258,6 +285,31 @@ const ConfirmScreen = () => {
                     <span className="font-semibold text-gray-700 dark:text-gray-200">Automotive</span>
                   </div>
                 </div>
+              ) : scannedData ? (
+                // Show scanned document link when scan option was used
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">Document Type:</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-200">Loan Agreement</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">Customer:</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-200">{scannedData.customerName}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400 font-medium">VIN:</span>
+                    <span className="font-semibold text-gray-700 dark:text-gray-200 font-mono">{scannedData.vin}</span>
+                  </div>
+                  <div className="flex justify-center pt-2">
+                    <button
+                      onClick={() => setShowScanModal(true)}
+                      className="flex items-center space-x-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg border border-blue-200 dark:border-blue-800 transition-all duration-200 hover:shadow-sm"
+                    >
+                      <FileText className="w-4 h-4" />
+                      <span className="font-medium">View Document</span>
+                    </button>
+                  </div>
+                </div>
               ) : selectedMemo ? (
                 <div className="space-y-3">
                   <div className="flex justify-between items-start">
@@ -287,22 +339,13 @@ const ConfirmScreen = () => {
         </Card>
 
         {/* Action Buttons */}
-        <div className="pt-4 space-y-3">
+        <div className="space-y-3">
           <Button
             onClick={() => navigate('/payment')}
             className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold text-lg rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/30 transform hover:scale-[1.02]"
           >
             <Plus className="w-5 h-5 mr-3" />
             New Payment
-          </Button>
-          
-          <Button
-            onClick={handleShareReceipt}
-            variant="outline"
-            className="w-full h-12 bg-white dark:bg-gray-800 border-slate-200 dark:border-gray-600 text-slate-700 dark:text-gray-200 hover:bg-slate-50 dark:hover:bg-gray-700 hover:border-slate-300 dark:hover:border-gray-500 font-medium rounded-xl transition-all duration-200"
-          >
-            <Mail className="w-4 h-4 mr-2" />
-            Share Receipt
           </Button>
         </div>
       </div>
@@ -357,7 +400,7 @@ const ConfirmScreen = () => {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600 dark:text-gray-400">Total:</span>
-                  <span className="font-medium text-slate-700 dark:text-gray-200">${total.toFixed(2)}</span>
+                  <span className="font-medium text-slate-700 dark:text-gray-200">${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600 dark:text-gray-400">Date:</span>
@@ -408,6 +451,16 @@ const ConfirmScreen = () => {
             <p className="text-slate-600 dark:text-gray-400">Your receipt has been sent successfully.</p>
           </div>
         </div>
+      )}
+
+      {/* Scan Modal */}
+      {showScanModal && (
+        <ScanModal
+          isOpen={showScanModal}
+          onClose={() => setShowScanModal(false)}
+          onScanComplete={() => setShowScanModal(false)}
+          existingData={scannedData}
+        />
       )}
     </div>
   );

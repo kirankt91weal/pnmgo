@@ -34,7 +34,7 @@ const TipScreen = () => {
     { label: 'Custom', value: 0, percentage: null }
   ];
 
-  const tipPercentage = selectedTip > 0 ? ((selectedTip / baseAmount) * 100).toFixed(0) : 0;
+
 
   const handleTipSelect = (tip) => {
     if (tip.percentage === null) {
@@ -75,6 +75,7 @@ const TipScreen = () => {
     const selectedOrder = urlParams.get('order');
     const selectedCatalog = urlParams.get('catalog');
     const selectedMemo = urlParams.get('memo');
+    const scannedData = urlParams.get('scanned');
     
     const params = new URLSearchParams();
     params.set('amount', baseAmount);
@@ -84,6 +85,7 @@ const TipScreen = () => {
     if (selectedOrder) params.set('order', selectedOrder);
     if (selectedCatalog) params.set('catalog', selectedCatalog);
     if (selectedMemo) params.set('memo', selectedMemo);
+    if (scannedData) params.set('scanned', scannedData);
     
     navigate(`/confirm?${params.toString()}`);
   };
@@ -94,6 +96,7 @@ const TipScreen = () => {
     const selectedOrder = urlParams.get('order');
     const selectedCatalog = urlParams.get('catalog');
     const selectedMemo = urlParams.get('memo');
+    const scannedData = urlParams.get('scanned');
     
     const params = new URLSearchParams();
     params.set('amount', baseAmount);
@@ -103,6 +106,7 @@ const TipScreen = () => {
     if (selectedOrder) params.set('order', selectedOrder);
     if (selectedCatalog) params.set('catalog', selectedCatalog);
     if (selectedMemo) params.set('memo', selectedMemo);
+    if (scannedData) params.set('scanned', scannedData);
     
     navigate(`/confirm?${params.toString()}`);
   };
@@ -135,7 +139,7 @@ const TipScreen = () => {
                   <DollarSign className="w-5 h-5 text-slate-600 dark:text-gray-400" />
                   <span className="text-sm text-slate-600 dark:text-gray-400 font-medium">Base Amount</span>
                 </div>
-                <p className="text-3xl font-bold text-slate-700 dark:text-gray-100">${baseAmount.toFixed(2)}</p>
+                <p className="text-3xl font-bold text-slate-700 dark:text-gray-100">${baseAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
               </div>
               
               <div className="border-t border-slate-200 dark:border-gray-600 pt-4">
@@ -146,14 +150,14 @@ const TipScreen = () => {
                 {tippingEnabled && selectedTip > 0 && (
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm text-slate-600 dark:text-gray-400">Tip:</span>
-                    <span className="text-sm font-semibold text-emerald-600">+${selectedTip.toFixed(2)}</span>
+                    <span className="text-sm font-semibold text-emerald-600">+${selectedTip.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 )}
                 <div className="border-t border-slate-200 dark:border-gray-600 pt-2">
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-slate-700 dark:text-gray-200">Total:</span>
                     <span className="font-bold text-lg text-slate-700 dark:text-gray-200">
-                      ${(baseAmount + 3.99 + (tippingEnabled ? selectedTip : 0)).toFixed(2)}
+                      ${(baseAmount + 3.99 + (tippingEnabled ? selectedTip : 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </div>
                 </div>
@@ -183,7 +187,7 @@ const TipScreen = () => {
                     <div className="text-center">
                       <div className="font-semibold text-sm">{tip.label}</div>
                       <div className="text-xs opacity-80 mt-1">
-                        ${tip.value.toFixed(2)}
+                        ${tip.value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </div>
                     </div>
                   </button>

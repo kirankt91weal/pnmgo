@@ -62,12 +62,61 @@ const ScanModal = ({ isOpen, onClose, onScanComplete, existingData = null }) => 
 
   const [sampleLoanData, setSampleLoanData] = useState(generateRandomLoanData());
 
+  // Function to generate complete loan data from existing scanned data
+  const generateCompleteDataFromExisting = (existingData) => {
+    // Start with existing data
+    const completeData = { ...existingData };
+    
+    // Generate missing SSN if not present
+    if (!completeData.ssn) {
+      const ssn = `${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 90) + 10}-${Math.floor(Math.random() * 9000) + 1000}`;
+      completeData.ssn = ssn;
+    }
+    
+    // Generate missing loan amount if not present
+    if (!completeData.loanAmount) {
+      // Estimate loan amount based on down payment (assuming 10-20% down)
+      const downPayment = parseFloat(completeData.downPayment?.replace(/[$,]/g, '') || '3000');
+      const downPaymentPercent = Math.random() * 0.1 + 0.1; // 10-20%
+      const estimatedLoanAmount = Math.floor(downPayment / downPaymentPercent);
+      completeData.loanAmount = estimatedLoanAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    
+    // Generate missing interest rate if not present
+    if (!completeData.interestRate) {
+      completeData.interestRate = (Math.random() * 10 + 8).toFixed(2); // 8-18%
+    }
+    
+    // Generate missing loan term if not present
+    if (!completeData.loanTerm) {
+      const loanTerms = [36, 48, 60, 72];
+      completeData.loanTerm = loanTerms[Math.floor(Math.random() * loanTerms.length)];
+    }
+    
+    // Generate missing monthly payment if not present
+    if (!completeData.monthlyPayment) {
+      const loanAmount = parseFloat(completeData.loanAmount?.replace(/[$,]/g, '') || '25000');
+      const monthlyRate = parseFloat(completeData.interestRate || '12') / 100 / 12;
+      const loanTerm = completeData.loanTerm || 60;
+      const monthlyPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, loanTerm)) / (Math.pow(1 + monthlyRate, loanTerm) - 1);
+      completeData.monthlyPayment = monthlyPayment.toFixed(2);
+    }
+    
+    // Generate missing loan date if not present
+    if (!completeData.loanDate) {
+      completeData.loanDate = new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    }
+    
+    return completeData;
+  };
+
   useEffect(() => {
     if (isOpen) {
       if (existingData) {
-        // View mode - show existing data
-        setExtractedData(existingData);
-        setScanStep('extracting');
+        // View mode - generate complete data by filling in missing fields
+        const completeData = generateCompleteDataFromExisting(existingData);
+        setExtractedData(completeData);
+        setScanStep('viewing');
       } else {
         // New scan mode
         setScanStep('scanning');
@@ -99,6 +148,9 @@ const ScanModal = ({ isOpen, onClose, onScanComplete, existingData = null }) => 
   };
 
   const formatSSN = (ssn) => {
+    // Handle undefined or null SSN
+    if (!ssn) return '***-**-****';
+    
     // Remove any non-digit characters and ensure we have exactly 9 digits
     const cleanSSN = ssn.replace(/\D/g, '');
     
@@ -270,6 +322,108 @@ const ScanModal = ({ isOpen, onClose, onScanComplete, existingData = null }) => 
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   Verify & Continue
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Viewing Step - for viewing existing scanned data */}
+          {scanStep === 'viewing' && extractedData && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-center space-x-2">
+                <div className="w-5 h-5 bg-white dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                  <FileText className="w-3 h-3 text-slate-600 dark:text-gray-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-gray-200">
+                  Scanned Document Details
+                </h3>
+              </div>
+              
+              <Card className="bg-slate-50 dark:bg-gray-700 border-slate-200 dark:border-gray-600">
+                <CardContent className="p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">
+                        Customer Name
+                      </label>
+                      <p className="text-sm font-medium text-slate-800 dark:text-gray-200">
+                        {extractedData.customerName}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">
+                        SSN
+                      </label>
+                      <p className="text-sm font-medium text-slate-800 dark:text-gray-200">
+                        {formatSSN(extractedData.ssn)}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">
+                        VIN
+                      </label>
+                      <p className="text-sm font-medium text-slate-800 dark:text-gray-200 font-mono">
+                        {extractedData.vin}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">
+                        Loan Amount
+                      </label>
+                      <p className="text-sm font-medium text-slate-800 dark:text-gray-200">
+                        ${extractedData.loanAmount}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">
+                        Down Payment
+                      </label>
+                      <p className="text-sm font-medium text-slate-800 dark:text-gray-200">
+                        ${extractedData.downPayment}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">
+                        Interest Rate
+                      </label>
+                      <p className="text-sm font-medium text-slate-800 dark:text-gray-200">
+                        {extractedData.interestRate}%
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">
+                        Loan Term
+                      </label>
+                      <p className="text-sm font-medium text-slate-800 dark:text-gray-200">
+                        {extractedData.loanTerm} months
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">
+                        Monthly Payment
+                      </label>
+                      <p className="text-sm font-medium text-slate-800 dark:text-gray-200">
+                        ${extractedData.monthlyPayment}
+                      </p>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="text-xs font-medium text-slate-500 dark:text-gray-400 uppercase tracking-wider">
+                        Dealer
+                      </label>
+                      <p className="text-sm font-medium text-slate-800 dark:text-gray-200">
+                        {extractedData.dealerName}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="flex justify-center">
+                <Button
+                  onClick={onClose}
+                  className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Close
                 </Button>
               </div>
             </div>

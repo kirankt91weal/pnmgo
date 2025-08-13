@@ -118,7 +118,7 @@ const TransactionsScreen = () => {
     const transactions = [];
     const today = new Date();
     
-    // Sample data for orders, catalogs, and memos
+    // Sample data for orders, catalogs, memos, and scanned documents
     const sampleOrders = [
       { orderNumber: 'ORD-001', customerName: 'John Smith', customerNumber: 'CUST-001' },
       { orderNumber: 'ORD-002', customerName: 'Sarah Johnson', customerNumber: 'CUST-002' },
@@ -147,6 +147,17 @@ const TransactionsScreen = () => {
       { text: '2020 Lexus RX - VWX234' },
       { text: '2022 Tesla Model 3 - YZA567' }
     ];
+
+    const sampleScannedDocuments = [
+      { customerName: 'Alex Rodriguez', vin: '1HGBH41JXMN109186', downPayment: '3,500.00', dealerName: 'Premium Auto Sales' },
+      { customerName: 'Maria Garcia', vin: '5NPE34AF4FH123456', downPayment: '2,800.00', dealerName: 'Elite Motors' },
+      { customerName: 'Kevin Chen', vin: 'WBA8A9C50FD123789', downPayment: '4,200.00', dealerName: 'Drive Time Auto' },
+      { customerName: 'Lisa Thompson', vin: '3VWDX7AJ5DM123456', downPayment: '3,100.00', dealerName: 'CarMax Express' },
+      { customerName: 'Robert Wilson', vin: '1FADP3F22FL123456', downPayment: '2,900.00', dealerName: 'AutoNation Plus' },
+      { customerName: 'Jennifer Lee', vin: '5YJSA1E47JF123456', downPayment: '5,000.00', dealerName: 'Enterprise Auto' },
+      { customerName: 'Michael Brown', vin: '1G1ZT51806F123456', downPayment: '3,300.00', dealerName: 'Hertz Car Sales' },
+      { customerName: 'Amanda Davis', vin: '4T1B11HK5JU123456', downPayment: '2,600.00', dealerName: 'Budget Auto Group' }
+    ];
     
     // Generate transactions for the last 7 days
     for (let day = 6; day >= 0; day--) {
@@ -165,77 +176,101 @@ const TransactionsScreen = () => {
       // Generate completed transactions
       for (let i = 0; i < completed; i++) {
         const cardBrand = cardBrands[Math.floor(Math.random() * cardBrands.length)];
-        const amount = (Math.random() * 500 + 10).toFixed(2); // $10-$510
+        let amount = 0;
         const hour = Math.floor(Math.random() * 12) + 6; // 6 AM - 6 PM
         const minute = Math.floor(Math.random() * 60);
         const timeStr = `${hour}:${String(minute).padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`;
         
-        // Randomly add order, catalog, or memo (30% chance each, 10% chance none)
+        // Randomly add order, catalog, memo, or scanned document (25% chance each, 0% chance none)
         const itemType = Math.random();
         let selectedItem = null;
         
-        if (itemType < 0.3) {
+        if (itemType < 0.25) {
           // Add order
           selectedItem = {
             type: 'order',
             data: sampleOrders[Math.floor(Math.random() * sampleOrders.length)]
           };
-        } else if (itemType < 0.6) {
+          amount = (Math.random() * 500 + 10).toFixed(2); // $10-$510
+        } else if (itemType < 0.5) {
           // Add catalog
           selectedItem = {
             type: 'catalog',
             data: sampleCatalogs[Math.floor(Math.random() * sampleCatalogs.length)]
           };
-        } else if (itemType < 0.9) {
+          amount = (Math.random() * 500 + 10).toFixed(2); // $10-$510
+        } else if (itemType < 0.75) {
           // Add memo
           selectedItem = {
             type: 'memo',
             data: sampleMemos[Math.floor(Math.random() * sampleMemos.length)]
           };
+          amount = (Math.random() * 500 + 10).toFixed(2); // $10-$510
+        } else {
+          // Add scanned document - use the actual down payment amount
+          const scannedDoc = sampleScannedDocuments[Math.floor(Math.random() * sampleScannedDocuments.length)];
+          selectedItem = {
+            type: 'scanned',
+            data: scannedDoc
+          };
+          // Extract the down payment amount (remove $ and commas, then parse)
+          amount = parseFloat(scannedDoc.downPayment.replace(/[$,]/g, '')).toFixed(2);
         }
         
-        transactions.push({
-          id: transactions.length + 1,
-          cardBrand,
-          lastFour: String(Math.floor(Math.random() * 9000) + 1000),
-          status: 'Complete',
-          statusIcon: Check,
-          statusColor: 'text-green-600',
-          date: dateStr,
-          amount: `$${amount}`,
-          transactionId: `TXN-${String(transactions.length + 1).padStart(3, '0')}`,
-          time: timeStr,
-          selectedItem
-        });
+
+        
+                  transactions.push({
+            id: transactions.length + 1,
+            cardBrand,
+            lastFour: String(Math.floor(Math.random() * 9000) + 1000),
+            status: 'Complete',
+            statusIcon: Check,
+            statusColor: 'text-green-600',
+            date: dateStr,
+            amount: `$${parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+            transactionId: `TXN-${String(transactions.length + 1).padStart(3, '0')}`,
+            time: timeStr,
+            selectedItem
+          });
       }
       
       // Generate declined transactions
       for (let i = 0; i < declined; i++) {
         const cardBrand = cardBrands[Math.floor(Math.random() * cardBrands.length)];
-        const amount = (Math.random() * 300 + 10).toFixed(2);
+        let amount = 0;
         const hour = Math.floor(Math.random() * 12) + 6;
         const minute = Math.floor(Math.random() * 60);
         const timeStr = `${hour}:${String(minute).padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`;
         
-        // Randomly add order, catalog, or memo for declined transactions too
+        // Randomly add order, catalog, memo, or scanned document for declined transactions too
         const itemType = Math.random();
         let selectedItem = null;
         
-        if (itemType < 0.3) {
+        if (itemType < 0.25) {
           selectedItem = {
             type: 'order',
             data: sampleOrders[Math.floor(Math.random() * sampleOrders.length)]
           };
-        } else if (itemType < 0.6) {
+          amount = (Math.random() * 300 + 10).toFixed(2);
+        } else if (itemType < 0.5) {
           selectedItem = {
             type: 'catalog',
             data: sampleCatalogs[Math.floor(Math.random() * sampleCatalogs.length)]
           };
-        } else if (itemType < 0.9) {
+          amount = (Math.random() * 300 + 10).toFixed(2);
+        } else if (itemType < 0.75) {
           selectedItem = {
             type: 'memo',
             data: sampleMemos[Math.floor(Math.random() * sampleMemos.length)]
           };
+          amount = (Math.random() * 300 + 10).toFixed(2);
+        } else {
+          selectedItem = {
+            type: 'scanned',
+            data: sampleScannedDocuments[Math.floor(Math.random() * sampleScannedDocuments.length)]
+          };
+          // For declined scanned transactions, use a random amount (since they failed)
+          amount = (Math.random() * 300 + 10).toFixed(2);
         }
         
         transactions.push({
@@ -246,7 +281,7 @@ const TransactionsScreen = () => {
           statusIcon: X,
           statusColor: 'text-red-600',
           date: dateStr,
-          amount: `$${amount}`,
+          amount: `$${parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
           transactionId: `TXN-${String(transactions.length + 1).padStart(3, '0')}`,
           time: timeStr,
           selectedItem
@@ -256,30 +291,40 @@ const TransactionsScreen = () => {
       // Generate refunded transactions
       for (let i = 0; i < refunded; i++) {
         const cardBrand = cardBrands[Math.floor(Math.random() * cardBrands.length)];
-        const amount = (Math.random() * 200 + 10).toFixed(2);
+        let amount = 0;
         const hour = Math.floor(Math.random() * 12) + 6;
         const minute = Math.floor(Math.random() * 60);
         const timeStr = `${hour}:${String(minute).padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`;
         
-        // Randomly add order, catalog, or memo for refunded transactions too
+        // Randomly add order, catalog, memo, or scanned document for refunded transactions too
         const itemType = Math.random();
         let selectedItem = null;
         
-        if (itemType < 0.3) {
+        if (itemType < 0.25) {
           selectedItem = {
             type: 'order',
             data: sampleOrders[Math.floor(Math.random() * sampleOrders.length)]
           };
-        } else if (itemType < 0.6) {
+          amount = (Math.random() * 200 + 10).toFixed(2);
+        } else if (itemType < 0.5) {
           selectedItem = {
             type: 'catalog',
             data: sampleCatalogs[Math.floor(Math.random() * sampleCatalogs.length)]
           };
-        } else if (itemType < 0.9) {
+          amount = (Math.random() * 200 + 10).toFixed(2);
+        } else if (itemType < 0.75) {
           selectedItem = {
             type: 'memo',
             data: sampleMemos[Math.floor(Math.random() * sampleMemos.length)]
           };
+          amount = (Math.random() * 200 + 10).toFixed(2);
+        } else {
+          selectedItem = {
+            type: 'scanned',
+            data: sampleScannedDocuments[Math.floor(Math.random() * sampleScannedDocuments.length)]
+          };
+          // For refunded scanned transactions, use a random amount (since they were refunded)
+          amount = (Math.random() * 200 + 10).toFixed(2);
         }
         
         transactions.push({
@@ -290,13 +335,15 @@ const TransactionsScreen = () => {
           statusIcon: RotateCcw,
           statusColor: 'text-blue-600',
           date: dateStr,
-          amount: `$${amount}`,
+          amount: `$${parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
           transactionId: `TXN-${String(transactions.length + 1).padStart(3, '0')}`,
           time: timeStr,
           selectedItem
         });
       }
     }
+    
+
     
     return transactions;
   };
@@ -318,6 +365,8 @@ const TransactionsScreen = () => {
         params.set('catalog', encodeURIComponent(JSON.stringify(transaction.selectedItem.data)));
       } else if (transaction.selectedItem.type === 'memo') {
         params.set('memo', encodeURIComponent(JSON.stringify(transaction.selectedItem.data)));
+      } else if (transaction.selectedItem.type === 'scanned') {
+        params.set('scanned', encodeURIComponent(JSON.stringify(transaction.selectedItem.data)));
       }
     }
     
@@ -623,7 +672,7 @@ const TransactionsScreen = () => {
                   <Check className="h-5 w-5 text-green-400" />
                 </div>
                 <p className="text-2xl font-bold text-green-400">{completedTransactions}</p>
-                <p className="text-xs text-gray-400">${totalAmount.toFixed(2)}</p>
+                <p className="text-xs text-gray-400">${Math.round(totalAmount).toLocaleString('en-US')}</p>
               </div>
             </CardContent>
           </Card>
@@ -707,7 +756,38 @@ const TransactionsScreen = () => {
                                 <span className={`text-xs font-medium ${transaction.statusColor}`}>{transaction.status}</span>
                               </div>
                             </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">{transaction.date} • {transaction.time}</p>
+                            <div className="flex items-center space-x-2">
+                              <p className="text-xs text-gray-500 dark:text-gray-400">{transaction.date} • {transaction.time}</p>
+                              {/* Payment Type Indicator - Subtle dot with tooltip */}
+                              {transaction.selectedItem && (
+                                <div className="flex items-center space-x-1">
+                                  {transaction.selectedItem.type === 'order' && (
+                                    <div className="flex items-center space-x-1">
+                                      <div className="w-2 h-2 bg-blue-500 rounded-full" title="Order Payment"></div>
+                                      <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">O</span>
+                                    </div>
+                                  )}
+                                  {transaction.selectedItem.type === 'catalog' && (
+                                    <div className="flex items-center space-x-1">
+                                      <div className="w-2 h-2 bg-green-500 rounded-full" title="Catalog Payment"></div>
+                                      <span className="text-xs text-green-600 dark:text-green-400 font-medium">C</span>
+                                    </div>
+                                  )}
+                                  {transaction.selectedItem.type === 'scanned' && (
+                                    <div className="flex items-center space-x-1">
+                                      <div className="w-2 h-2 bg-purple-500 rounded-full" title="Scanned Document Payment"></div>
+                                      <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">S</span>
+                                    </div>
+                                  )}
+                                  {transaction.selectedItem.type === 'memo' && (
+                                    <div className="flex items-center space-x-1">
+                                      <div className="w-2 h-2 bg-orange-500 rounded-full" title="Memo Payment"></div>
+                                      <span className="text-xs text-orange-600 dark:text-orange-400 font-medium">M</span>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                         
