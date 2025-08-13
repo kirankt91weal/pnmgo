@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCcVisa, faCcMastercard, faCcAmex, faCcDiscover } from '@fortawesome/free-brands-svg-icons';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
+import { getOrderOptionEnabled, getCatalogOptionEnabled, getMemoEnabled, getScanOptionEnabled } from '../lib/settings';
 
 const TransactionsScreen = () => {
   const navigate = useNavigate();
@@ -181,40 +182,52 @@ const TransactionsScreen = () => {
         const minute = Math.floor(Math.random() * 60);
         const timeStr = `${hour}:${String(minute).padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`;
         
-        // Randomly add order, catalog, memo, or scanned document (25% chance each, 0% chance none)
-        const itemType = Math.random();
+        // Randomly add order, catalog, memo, or scanned document based on enabled settings
+        const enabledTypes = [];
+        if (getOrderOptionEnabled()) enabledTypes.push('order');
+        if (getCatalogOptionEnabled()) enabledTypes.push('catalog');
+        if (getMemoEnabled()) enabledTypes.push('memo');
+        if (getScanOptionEnabled()) enabledTypes.push('scanned');
+        
+        // If no types are enabled, skip this transaction
+        if (enabledTypes.length === 0) continue;
+        
+        // Randomly select from enabled types
+        const randomType = enabledTypes[Math.floor(Math.random() * enabledTypes.length)];
         let selectedItem = null;
         
-        if (itemType < 0.25) {
+        if (randomType === 'order') {
           // Add order
           selectedItem = {
             type: 'order',
             data: sampleOrders[Math.floor(Math.random() * sampleOrders.length)]
           };
           amount = (Math.random() * 500 + 10).toFixed(2); // $10-$510
-        } else if (itemType < 0.5) {
+        } else if (randomType === 'catalog') {
           // Add catalog
           selectedItem = {
             type: 'catalog',
             data: sampleCatalogs[Math.floor(Math.random() * sampleCatalogs.length)]
           };
           amount = (Math.random() * 500 + 10).toFixed(2); // $10-$510
-        } else if (itemType < 0.75) {
+        } else if (randomType === 'memo') {
           // Add memo
           selectedItem = {
             type: 'memo',
             data: sampleMemos[Math.floor(Math.random() * sampleMemos.length)]
           };
           amount = (Math.random() * 500 + 10).toFixed(2); // $10-$510
-        } else {
-          // Add scanned document - use the actual down payment amount
+        } else if (randomType === 'scanned') {
+          // Add scanned document - calculate down payment + fees
           const scannedDoc = sampleScannedDocuments[Math.floor(Math.random() * sampleScannedDocuments.length)];
           selectedItem = {
             type: 'scanned',
             data: scannedDoc
           };
           // Extract the down payment amount (remove $ and commas, then parse)
-          amount = parseFloat(scannedDoc.downPayment.replace(/[$,]/g, '')).toFixed(2);
+          const downPayment = parseFloat(scannedDoc.downPayment.replace(/[$,]/g, ''));
+          const serviceFee = 3.99; // Same service fee as used throughout the app
+          amount = (downPayment + serviceFee).toFixed(2);
         }
         
 
@@ -242,35 +255,48 @@ const TransactionsScreen = () => {
         const minute = Math.floor(Math.random() * 60);
         const timeStr = `${hour}:${String(minute).padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`;
         
-        // Randomly add order, catalog, memo, or scanned document for declined transactions too
-        const itemType = Math.random();
+        // Randomly add order, catalog, memo, or scanned document for declined transactions based on enabled settings
+        const enabledTypesDeclined = [];
+        if (getOrderOptionEnabled()) enabledTypesDeclined.push('order');
+        if (getCatalogOptionEnabled()) enabledTypesDeclined.push('catalog');
+        if (getMemoEnabled()) enabledTypesDeclined.push('memo');
+        if (getScanOptionEnabled()) enabledTypesDeclined.push('scanned');
+        
+        // If no types are enabled, skip this transaction
+        if (enabledTypesDeclined.length === 0) continue;
+        
+        // Randomly select from enabled types
+        const randomTypeDeclined = enabledTypesDeclined[Math.floor(Math.random() * enabledTypesDeclined.length)];
         let selectedItem = null;
         
-        if (itemType < 0.25) {
+        if (randomTypeDeclined === 'order') {
           selectedItem = {
             type: 'order',
             data: sampleOrders[Math.floor(Math.random() * sampleOrders.length)]
           };
           amount = (Math.random() * 300 + 10).toFixed(2);
-        } else if (itemType < 0.5) {
+        } else if (randomTypeDeclined === 'catalog') {
           selectedItem = {
             type: 'catalog',
             data: sampleCatalogs[Math.floor(Math.random() * sampleCatalogs.length)]
           };
           amount = (Math.random() * 300 + 10).toFixed(2);
-        } else if (itemType < 0.75) {
+        } else if (randomTypeDeclined === 'memo') {
           selectedItem = {
             type: 'memo',
             data: sampleMemos[Math.floor(Math.random() * sampleMemos.length)]
           };
           amount = (Math.random() * 300 + 10).toFixed(2);
-        } else {
+        } else if (randomTypeDeclined === 'scanned') {
           selectedItem = {
             type: 'scanned',
             data: sampleScannedDocuments[Math.floor(Math.random() * sampleScannedDocuments.length)]
           };
-          // For declined scanned transactions, use a random amount (since they failed)
-          amount = (Math.random() * 300 + 10).toFixed(2);
+          // For declined scanned transactions, calculate down payment + fees (since they attempted to pay)
+          const scannedDoc = sampleScannedDocuments[Math.floor(Math.random() * sampleScannedDocuments.length)];
+          const downPayment = parseFloat(scannedDoc.downPayment.replace(/[$,]/g, ''));
+          const serviceFee = 3.99;
+          amount = (downPayment + serviceFee).toFixed(2);
         }
         
         transactions.push({
@@ -296,35 +322,48 @@ const TransactionsScreen = () => {
         const minute = Math.floor(Math.random() * 60);
         const timeStr = `${hour}:${String(minute).padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`;
         
-        // Randomly add order, catalog, memo, or scanned document for refunded transactions too
-        const itemType = Math.random();
+        // Randomly add order, catalog, memo, or scanned document for refunded transactions based on enabled settings
+        const enabledTypesRefunded = [];
+        if (getOrderOptionEnabled()) enabledTypesRefunded.push('order');
+        if (getCatalogOptionEnabled()) enabledTypesRefunded.push('catalog');
+        if (getMemoEnabled()) enabledTypesRefunded.push('memo');
+        if (getScanOptionEnabled()) enabledTypesRefunded.push('scanned');
+        
+        // If no types are enabled, skip this transaction
+        if (enabledTypesRefunded.length === 0) continue;
+        
+        // Randomly select from enabled types
+        const randomTypeRefunded = enabledTypesRefunded[Math.floor(Math.random() * enabledTypesRefunded.length)];
         let selectedItem = null;
         
-        if (itemType < 0.25) {
+        if (randomTypeRefunded === 'order') {
           selectedItem = {
             type: 'order',
             data: sampleOrders[Math.floor(Math.random() * sampleOrders.length)]
           };
           amount = (Math.random() * 200 + 10).toFixed(2);
-        } else if (itemType < 0.5) {
+        } else if (randomTypeRefunded === 'catalog') {
           selectedItem = {
             type: 'catalog',
             data: sampleCatalogs[Math.floor(Math.random() * sampleCatalogs.length)]
           };
           amount = (Math.random() * 200 + 10).toFixed(2);
-        } else if (itemType < 0.75) {
+        } else if (randomTypeRefunded === 'memo') {
           selectedItem = {
             type: 'memo',
             data: sampleMemos[Math.floor(Math.random() * sampleMemos.length)]
           };
           amount = (Math.random() * 200 + 10).toFixed(2);
-        } else {
+        } else if (randomTypeRefunded === 'scanned') {
           selectedItem = {
             type: 'scanned',
             data: sampleScannedDocuments[Math.floor(Math.random() * sampleScannedDocuments.length)]
           };
-          // For refunded scanned transactions, use a random amount (since they were refunded)
-          amount = (Math.random() * 200 + 10).toFixed(2);
+          // For refunded scanned transactions, calculate down payment + fees (since they were refunded)
+          const scannedDoc = sampleScannedDocuments[Math.floor(Math.random() * sampleScannedDocuments.length)];
+          const downPayment = parseFloat(scannedDoc.downPayment.replace(/[$,]/g, ''));
+          const serviceFee = 3.99;
+          amount = (downPayment + serviceFee).toFixed(2);
         }
         
         transactions.push({
