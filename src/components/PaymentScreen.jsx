@@ -352,8 +352,8 @@ const PaymentScreen = () => {
             console.log('Debug PaymentScreen final params:', { amount, cleanAmount, scannedData, finalParams: params.toString() });
             console.log('Debug PaymentScreen scannedData state at click:', scannedData);
             
-            // Always go to Tap to Pay screen first, then to tip/confirm
-            navigate(`/tap-to-pay?${params.toString()}`);
+            // Go to Payment Method selection screen first
+            navigate(`/payment-method?${params.toString()}`);
           }}
           disabled={amount === '0.00' && !scannedData}
           className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-300 disabled:to-slate-400 disabled:cursor-not-allowed text-white font-semibold text-lg rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/30 disabled:shadow-none transform hover:scale-[1.01] disabled:transform-none"

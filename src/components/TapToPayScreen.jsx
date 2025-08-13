@@ -87,7 +87,7 @@ const TapToPayScreen = () => {
       setExpiryDate('');
       setCvv('');
     } else {
-      navigate('/payment');
+      navigate('/payment-method');
     }
   };
 
@@ -186,8 +186,11 @@ const TapToPayScreen = () => {
             
             {/* Instructions */}
             <h2 className="text-white text-lg font-medium text-center">
-              {showCheck ? "Card Tapped" : "Hold Here to Pay"}
+              {showCheck ? "Payment Successful" : "Hold Here to Pay"}
             </h2>
+            <p className="text-gray-300 text-sm text-center mt-1">
+              Tap to Pay
+            </p>
           </div>
         )}
 
@@ -209,7 +212,7 @@ const TapToPayScreen = () => {
             {/* Payment Amount */}
             <div className="text-center mb-6">
               <span className="text-white text-2xl font-bold">
-                ${amount}
+                ${parseFloat(amount.replace('$', '')).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
 

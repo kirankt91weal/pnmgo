@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginScreen from "./components/LoginScreen";
 import HomeScreen from "./components/HomeScreen";
 import PaymentScreen from "./components/PaymentScreen";
+import PaymentMethodScreen from "./components/PaymentMethodScreen";
 import TapToPayScreen from "./components/TapToPayScreen";
 import TipScreen from "./components/TipScreen";
 import ConfirmScreen from "./components/ConfirmScreen";
@@ -35,6 +36,7 @@ function App() {
           <Route path="/confirm" element={<ConfirmScreen />} />
           <Route path="/transactions" element={<TransactionsScreen />} />
           <Route path="/payment" element={<PaymentScreen />} />
+          <Route path="/payment-method" element={<PaymentMethodScreen />} />
           <Route path="/settings" element={<SettingsScreen />} />
       </Routes>
       </Layout>
