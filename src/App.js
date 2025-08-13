@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginScreen from "./components/LoginScreen";
 import HomeScreen from "./components/HomeScreen";
 import PaymentScreen from "./components/PaymentScreen";
+import PaymentMethodScreen from "./components/PaymentMethodScreen";
 import TapToPayScreen from "./components/TapToPayScreen";
 import TipScreen from "./components/TipScreen";
 import ConfirmScreen from "./components/ConfirmScreen";
@@ -30,10 +31,12 @@ function App() {
           <Route path="/home" element={<HomeScreen />} />
           <Route path="/lookup" element={<div className="p-8 text-center">Order Lookup Screen (Coming Soon)</div>} />
           <Route path="/pay/:orderId" element={<TapToPayScreen />} />
+          <Route path="/tap-to-pay" element={<TapToPayScreen />} />
           <Route path="/tip" element={<TipScreen />} />
           <Route path="/confirm" element={<ConfirmScreen />} />
           <Route path="/transactions" element={<TransactionsScreen />} />
           <Route path="/payment" element={<PaymentScreen />} />
+          <Route path="/payment-method" element={<PaymentMethodScreen />} />
           <Route path="/settings" element={<SettingsScreen />} />
       </Routes>
       </Layout>

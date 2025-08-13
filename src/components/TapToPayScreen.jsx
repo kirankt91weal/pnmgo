@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { X, ShoppingCart, SmartphoneNfc, Check } from 'lucide-react';
 import { Button } from './ui/button';
+import { getTippingEnabled } from '../lib/settings';
 
 const TapToPayScreen = () => {
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ const TapToPayScreen = () => {
         const selectedOrder = urlParams.get('order');
         const selectedCatalog = urlParams.get('catalog');
         const selectedMemo = urlParams.get('memo');
+        const scannedData = urlParams.get('scanned');
         
         const params = new URLSearchParams();
         params.set('amount', amount);
@@ -52,8 +54,16 @@ const TapToPayScreen = () => {
         if (selectedOrder) params.set('order', selectedOrder);
         if (selectedCatalog) params.set('catalog', selectedCatalog);
         if (selectedMemo) params.set('memo', selectedMemo);
+        if (scannedData) params.set('scanned', scannedData);
         
-        navigate(`/tip?${params.toString()}`);
+        // Check tipping setting to determine navigation
+        if (getTippingEnabled()) {
+          // Tipping enabled - go to tip screen
+          navigate(`/tip?${params.toString()}`);
+        } else {
+          // Tipping disabled - go directly to confirmation
+          navigate(`/confirm?${params.toString()}`);
+        }
       }, 3000);
 
       return () => {
@@ -77,7 +87,7 @@ const TapToPayScreen = () => {
       setExpiryDate('');
       setCvv('');
     } else {
-      navigate('/payment');
+      navigate('/payment-method');
     }
   };
 
@@ -109,6 +119,7 @@ const TapToPayScreen = () => {
     const selectedOrder = urlParams.get('order');
     const selectedCatalog = urlParams.get('catalog');
     const selectedMemo = urlParams.get('memo');
+    const scannedData = urlParams.get('scanned');
     
     const params = new URLSearchParams();
     params.set('amount', amount);
@@ -117,9 +128,16 @@ const TapToPayScreen = () => {
     if (selectedOrder) params.set('order', selectedOrder);
     if (selectedCatalog) params.set('catalog', selectedCatalog);
     if (selectedMemo) params.set('memo', selectedMemo);
+    if (scannedData) params.set('scanned', scannedData);
     
-    // Navigate to tip screen with card info
-    navigate(`/tip?${params.toString()}`);
+    // Check tipping setting to determine navigation
+    if (getTippingEnabled()) {
+      // Tipping enabled - go to tip screen
+      navigate(`/tip?${params.toString()}`);
+    } else {
+      // Tipping disabled - go directly to confirmation
+      navigate(`/confirm?${params.toString()}`);
+    }
   };
 
   return (
@@ -168,8 +186,11 @@ const TapToPayScreen = () => {
             
             {/* Instructions */}
             <h2 className="text-white text-lg font-medium text-center">
-              {showCheck ? "Card Tapped" : "Hold Here to Pay"}
+              {showCheck ? "Payment Successful" : "Hold Here to Pay"}
             </h2>
+            <p className="text-gray-300 text-sm text-center mt-1">
+              Tap to Pay
+            </p>
           </div>
         )}
 
@@ -191,7 +212,7 @@ const TapToPayScreen = () => {
             {/* Payment Amount */}
             <div className="text-center mb-6">
               <span className="text-white text-2xl font-bold">
-                ${amount}
+                ${parseFloat(amount.replace('$', '')).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
 
