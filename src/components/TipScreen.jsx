@@ -13,6 +13,7 @@ const TipScreen = () => {
   const urlParams = new URLSearchParams(location.search);
   const baseAmount = parseFloat(urlParams.get('amount') || '0');
   const method = urlParams.get('method') || 'tap';
+  const accountNumber = urlParams.get('accountNumber') || '';
   
   const [selectedTip, setSelectedTip] = useState(0);
   const [customTip, setCustomTip] = useState('');
@@ -81,6 +82,7 @@ const TipScreen = () => {
     params.set('amount', baseAmount);
     params.set('tip', '0');
     params.set('method', method);
+    if (accountNumber) params.set('accountNumber', accountNumber);
     
     if (selectedOrder) params.set('order', selectedOrder);
     if (selectedCatalog) params.set('catalog', selectedCatalog);
@@ -102,6 +104,7 @@ const TipScreen = () => {
     params.set('amount', baseAmount);
     params.set('tip', selectedTip);
     params.set('method', method);
+    if (accountNumber) params.set('accountNumber', accountNumber);
     
     if (selectedOrder) params.set('order', selectedOrder);
     if (selectedCatalog) params.set('catalog', selectedCatalog);

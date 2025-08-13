@@ -1,11 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, Check, ChevronRight, X, RotateCcw, CreditCard, AlertCircle, RefreshCw, ChevronLeft } from 'lucide-react';
+import { ArrowLeft, Calendar, Check, ChevronRight, X, RotateCcw, CreditCard, AlertCircle, RefreshCw, ChevronLeft, Building2, Smartphone } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCcVisa, faCcMastercard, faCcAmex, faCcDiscover } from '@fortawesome/free-brands-svg-icons';
+import { faCcVisa, faCcMastercard, faCcAmex, faCcDiscover, faCashApp } from '@fortawesome/free-brands-svg-icons';
+import { faBuildingColumns } from '@fortawesome/free-solid-svg-icons';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { getOrderOptionEnabled, getCatalogOptionEnabled, getMemoEnabled, getScanOptionEnabled } from '../lib/settings';
+
+// Venmo Icon Component
+const VenmoIcon = ({ className = "w-6 h-6" }) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 512 512"
+    className={className}
+    fill="currentColor"
+  >
+    <path d="M444.17,32H70.28C49.85,32,32,46.7,32,66.89V441.6C32,461.91,49.85,480,70.28,480H444.06C464.6,480,480,461.8,480,441.61V66.89C480.12,46.7,464.6,32,444.17,32ZM278,387H174.32L132.75,138.44l90.75-8.62,22,176.87c20.53-33.45,45.88-86,45.88-121.87,0-19.62-3.36-33-8.61-44L365.4,124.1c9.56,15.78,13.86,32,13.86,52.57C379.25,242.17,323.34,327.26,278,387Z"/>
+  </svg>
+);
 
 const TransactionsScreen = () => {
   const navigate = useNavigate();
@@ -24,6 +38,28 @@ const TransactionsScreen = () => {
     { icon: faCcAmex, name: 'Amex', color: 'text-[#006FCF]' }, // Amex blue
     { icon: faCcDiscover, name: 'Discover', color: 'text-[#FF6000]' } // Discover orange
   ];
+
+  // Payment method types with percentages
+  const paymentMethods = [
+    { type: 'card', percentage: 35, icon: cardBrands[Math.floor(Math.random() * cardBrands.length)], name: 'Card' },
+    { type: 'ach', percentage: 35, icon: 'Building2', name: 'ACH Transfer' },
+    { type: 'cashapp', percentage: 15, icon: 'Smartphone', name: 'Cash App Pay' },
+    { type: 'venmo', percentage: 15, icon: 'Smartphone', name: 'Venmo' }
+  ];
+
+  // Function to get random payment method based on percentages
+  const getRandomPaymentMethod = () => {
+    const random = Math.random() * 100;
+    let cumulative = 0;
+    
+    for (const method of paymentMethods) {
+      cumulative += method.percentage;
+      if (random <= cumulative) {
+        return method;
+      }
+    }
+    return paymentMethods[0]; // fallback to card
+  };
 
   // Generate dates for the last 90 days (more comprehensive range)
   const generateDates = () => {
@@ -176,7 +212,7 @@ const TransactionsScreen = () => {
       
       // Generate completed transactions
       for (let i = 0; i < completed; i++) {
-        const cardBrand = cardBrands[Math.floor(Math.random() * cardBrands.length)];
+        const paymentMethod = getRandomPaymentMethod();
         let amount = 0;
         const hour = Math.floor(Math.random() * 12) + 6; // 6 AM - 6 PM
         const minute = Math.floor(Math.random() * 60);
@@ -230,26 +266,25 @@ const TransactionsScreen = () => {
           amount = (downPayment + serviceFee).toFixed(2);
         }
         
-
-        
-                  transactions.push({
-            id: transactions.length + 1,
-            cardBrand,
-            lastFour: String(Math.floor(Math.random() * 9000) + 1000),
-            status: 'Complete',
-            statusIcon: Check,
-            statusColor: 'text-green-600',
-            date: dateStr,
-            amount: `$${parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-            transactionId: `TXN-${String(transactions.length + 1).padStart(3, '0')}`,
-            time: timeStr,
-            selectedItem
-          });
+        transactions.push({
+          id: transactions.length + 1,
+          paymentMethod,
+          lastFour: paymentMethod.type === 'card' ? String(Math.floor(Math.random() * 9000) + 1000) : 
+                    paymentMethod.type === 'ach' ? String(Math.floor(Math.random() * 9000) + 1000) : '',
+          status: 'Complete',
+          statusIcon: Check,
+          statusColor: 'text-green-600',
+          date: dateStr,
+          amount: `$${parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          transactionId: `TXN-${String(transactions.length + 1).padStart(3, '0')}`,
+          time: timeStr,
+          selectedItem
+        });
       }
       
       // Generate declined transactions
       for (let i = 0; i < declined; i++) {
-        const cardBrand = cardBrands[Math.floor(Math.random() * cardBrands.length)];
+        const paymentMethod = getRandomPaymentMethod();
         let amount = 0;
         const hour = Math.floor(Math.random() * 12) + 6;
         const minute = Math.floor(Math.random() * 60);
@@ -301,8 +336,9 @@ const TransactionsScreen = () => {
         
         transactions.push({
           id: transactions.length + 1,
-          cardBrand,
-          lastFour: String(Math.floor(Math.random() * 9000) + 1000),
+          paymentMethod,
+          lastFour: paymentMethod.type === 'card' ? String(Math.floor(Math.random() * 9000) + 1000) : 
+                    paymentMethod.type === 'ach' ? String(Math.floor(Math.random() * 9000) + 1000) : '',
           status: 'Declined',
           statusIcon: X,
           statusColor: 'text-red-600',
@@ -316,7 +352,7 @@ const TransactionsScreen = () => {
       
       // Generate refunded transactions
       for (let i = 0; i < refunded; i++) {
-        const cardBrand = cardBrands[Math.floor(Math.random() * cardBrands.length)];
+        const paymentMethod = getRandomPaymentMethod();
         let amount = 0;
         const hour = Math.floor(Math.random() * 12) + 6;
         const minute = Math.floor(Math.random() * 60);
@@ -368,8 +404,9 @@ const TransactionsScreen = () => {
         
         transactions.push({
           id: transactions.length + 1,
-          cardBrand,
-          lastFour: String(Math.floor(Math.random() * 9000) + 1000),
+          paymentMethod,
+          lastFour: paymentMethod.type === 'card' ? String(Math.floor(Math.random() * 9000) + 1000) : 
+                    paymentMethod.type === 'ach' ? String(Math.floor(Math.random() * 9000) + 1000) : '',
           status: 'Refunded',
           statusIcon: RotateCcw,
           statusColor: 'text-blue-600',
@@ -782,59 +819,72 @@ const TransactionsScreen = () => {
                         {/* Left Side - Card Info */}
                         <div className="flex items-center space-x-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700">
-                            <FontAwesomeIcon 
-                              icon={transaction.cardBrand.icon} 
-                              className={`h-6 w-6 ${transaction.cardBrand.color} dark:text-gray-300`}
-                            />
+                            {transaction.paymentMethod.type === 'card' ? (
+                              <FontAwesomeIcon 
+                                icon={transaction.paymentMethod.icon.icon} 
+                                className={`h-6 w-6 ${transaction.paymentMethod.icon.color} dark:text-gray-300`}
+                              />
+                            ) : transaction.paymentMethod.type === 'ach' ? (
+                              <FontAwesomeIcon icon={faBuildingColumns} className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                            ) : transaction.paymentMethod.type === 'cashapp' ? (
+                              <FontAwesomeIcon icon={faCashApp} className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                            ) : transaction.paymentMethod.type === 'venmo' ? (
+                              <VenmoIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                            ) : (
+                              <CreditCard className="h-6 w-6 text-gray-600 dark:text-gray-400" />
+                            )}
                           </div>
                           <div className="flex flex-col">
-                            <div className="flex items-center space-x-2">
-                              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">•••• {transaction.lastFour}</span>
-                              <div className="flex items-center space-x-1">
-                                <StatusIcon className={`h-3 w-3 ${transaction.statusColor}`} />
-                                <span className={`text-xs font-medium ${transaction.statusColor}`}>{transaction.status}</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <p className="text-xs text-gray-500 dark:text-gray-400">{transaction.date} • {transaction.time}</p>
-                              {/* Payment Type Indicator - Subtle dot with tooltip */}
-                              {transaction.selectedItem && (
-                                <div className="flex items-center space-x-1">
-                                  {transaction.selectedItem.type === 'order' && (
-                                    <div className="flex items-center space-x-1">
-                                      <div className="w-2 h-2 bg-blue-500 rounded-full" title="Order Payment"></div>
-                                      <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">O</span>
-                                    </div>
-                                  )}
-                                  {transaction.selectedItem.type === 'catalog' && (
-                                    <div className="flex items-center space-x-1">
-                                      <div className="w-2 h-2 bg-green-500 rounded-full" title="Catalog Payment"></div>
-                                      <span className="text-xs text-green-600 dark:text-green-400 font-medium">C</span>
-                                    </div>
-                                  )}
-                                  {transaction.selectedItem.type === 'scanned' && (
-                                    <div className="flex items-center space-x-1">
-                                      <div className="w-2 h-2 bg-purple-500 rounded-full" title="Scanned Document Payment"></div>
-                                      <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">S</span>
-                                    </div>
-                                  )}
-                                  {transaction.selectedItem.type === 'memo' && (
-                                    <div className="flex items-center space-x-1">
-                                      <div className="w-2 h-2 bg-orange-500 rounded-full" title="Memo Payment"></div>
-                                      <span className="text-xs text-orange-600 dark:text-orange-400 font-medium">M</span>
-                                    </div>
-                                  )}
-                                </div>
-                              )}
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">•••• {transaction.lastFour}</span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">{transaction.paymentMethod.name}</span>
+                            <div className="flex items-center space-x-1">
+                              <StatusIcon className={`h-3 w-3 ${transaction.statusColor}`} />
+                              <span className={`text-xs font-medium ${transaction.statusColor}`}>{transaction.status}</span>
                             </div>
                           </div>
                         </div>
                         
-                        {/* Right Side - Amount */}
-                        <div className="flex items-center space-x-2">
+                        {/* Right Side - Amount and Time */}
+                        <div className="flex flex-col items-end space-y-1">
                           <span className={`text-sm font-semibold ${transaction.status === 'Declined' ? 'text-red-600' : transaction.status === 'Refunded' ? 'text-blue-600' : 'text-gray-900 dark:text-gray-100'}`}>
                             {transaction.status === 'Declined' ? '-' : transaction.status === 'Refunded' ? '-' : ''}{transaction.amount}
                           </span>
+                          <div className="flex items-center space-x-2">
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{transaction.date} • {transaction.time}</p>
+                            {/* Payment Type Indicator - Subtle dot with tooltip */}
+                            {transaction.selectedItem && (
+                              <div className="flex items-center space-x-1">
+                                {transaction.selectedItem.type === 'order' && (
+                                  <div className="flex items-center space-x-1">
+                                    <div className="w-2 h-2 bg-blue-500 rounded-full" title="Order Payment"></div>
+                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">O</span>
+                                  </div>
+                                )}
+                                {transaction.selectedItem.type === 'catalog' && (
+                                  <div className="flex items-center space-x-1">
+                                    <div className="w-2 h-2 bg-green-500 rounded-full" title="Catalog Payment"></div>
+                                    <span className="text-xs text-green-600 dark:text-green-400 font-medium">C</span>
+                                  </div>
+                                )}
+                                {transaction.selectedItem.type === 'scanned' && (
+                                  <div className="flex items-center space-x-1">
+                                    <div className="w-2 h-2 bg-purple-500 rounded-full" title="Scanned Document Payment"></div>
+                                    <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">S</span>
+                                  </div>
+                                )}
+                                {transaction.selectedItem.type === 'memo' && (
+                                  <div className="flex items-center space-x-1">
+                                    <div className="w-2 h-2 bg-orange-500 rounded-full" title="Memo Payment"></div>
+                                    <span className="text-xs text-orange-600 dark:text-orange-400 font-medium">M</span>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {/* Chevron */}
+                        <div className="flex items-center">
                           <ChevronRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
                         </div>
                     </div>

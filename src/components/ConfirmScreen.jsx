@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Check, Plus, MessageCircle, X, Share, FileText } from 'lucide-react';
+import { ArrowLeft, Check, Plus, MessageCircle, X, Share, FileText, Building2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCcVisa, faCcMastercard, faCcAmex, faCcDiscover } from '@fortawesome/free-brands-svg-icons';
+import { faBuildingColumns } from '@fortawesome/free-solid-svg-icons';
 import ScanModal from './ScanModal';
+import VenmoIcon from './VenmoIcon'; // Added VenmoIcon import
 
 const ConfirmScreen = () => {
   const navigate = useNavigate();
@@ -24,6 +26,8 @@ const ConfirmScreen = () => {
   const rawAmount = urlParams.get('amount') || '150.00';
   const tipAmount = parseFloat(urlParams.get('tip') || '0');
   const fromTransactions = urlParams.get('from') === 'transactions';
+  const paymentMethod = urlParams.get('method') || 'card';
+  const accountNumber = urlParams.get('accountNumber') || '';
   
   // Debug the actual URL and search params
   console.log('Debug ConfirmScreen URL:', {
@@ -100,6 +104,19 @@ const ConfirmScreen = () => {
   const randomCard = cardBrands[Math.floor(Math.random() * cardBrands.length)];
   const lastFour = Math.floor(Math.random() * 9000) + 1000; // Random 4-digit number
   
+  // Randomize bank names for ACH transfers
+  const bankNames = [
+    'Bank of America',
+    'Chase Bank',
+    'Wells Fargo',
+    'Citibank',
+    'US Bank',
+    'PNC Bank',
+    'Capital One',
+    'TD Bank'
+  ];
+  const randomBank = bankNames[Math.floor(Math.random() * bankNames.length)];
+
   // Generate current date and time
   const now = new Date();
   const dateString = now.toLocaleDateString('en-US', { 
@@ -194,11 +211,31 @@ const ConfirmScreen = () => {
                   </div>
                 </div>
                 <div className="col-span-3 text-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Citi Bank - Debit</span>
+                  {paymentMethod === 'ach' ? (
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{randomBank} - Checking</span>
+                  ) : paymentMethod === 'venmo' ? (
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Venmo - Social Payment</span>
+                  ) : (
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Citi Bank - Debit</span>
+                  )}
                 </div>
                 <div className="flex items-center justify-end space-x-1">
-                  <span className={`${randomCard.color} dark:text-gray-300`}>{randomCard.icon}</span>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">{lastFour}</span>
+                  {paymentMethod === 'ach' ? (
+                    <>
+                      <FontAwesomeIcon icon={faBuildingColumns} className="w-4 h-4 text-emerald-600 dark:text-white" />
+                      <span className="text-sm text-gray-600 dark:text-gray-400">{accountNumber}</span>
+                    </>
+                  ) : paymentMethod === 'venmo' ? (
+                    <>
+                      <VenmoIcon className="w-4 h-4 text-blue-500" />
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Venmo</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className={`${randomCard.color} dark:text-gray-300`}>{randomCard.icon}</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">{lastFour}</span>
+                    </>
+                  )}
                 </div>
               </div>
             </CardContent>
