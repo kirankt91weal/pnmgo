@@ -30,6 +30,7 @@ function App() {
           <Route path="/home" element={<HomeScreen />} />
           <Route path="/lookup" element={<div className="p-8 text-center">Order Lookup Screen (Coming Soon)</div>} />
           <Route path="/pay/:orderId" element={<TapToPayScreen />} />
+          <Route path="/tap-to-pay" element={<TapToPayScreen />} />
           <Route path="/tip" element={<TipScreen />} />
           <Route path="/confirm" element={<ConfirmScreen />} />
           <Route path="/transactions" element={<TransactionsScreen />} />
