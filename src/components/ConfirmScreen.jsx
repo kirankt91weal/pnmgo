@@ -43,9 +43,12 @@ const ConfirmScreen = () => {
   const selectedMemo = urlParams.get('memo') ? JSON.parse(decodeURIComponent(urlParams.get('memo'))) : null;
   
   // Clean the amount and ensure proper formatting
-  const cleanAmount = rawAmount.replace(/^\$+/, ''); // Remove any existing $ symbols
+  const cleanAmount = rawAmount.replace(/^\$+/, '').replace(/,/g, ''); // Remove any existing $ symbols and commas
   const baseAmount = parseFloat(cleanAmount);
-  const amount = `$${baseAmount.toFixed(2)}`;
+  const amount = `$${baseAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  
+  // Debug logging to see what's happening
+  console.log('Debug amount parsing:', { rawAmount, cleanAmount, baseAmount, amount });
   
   // Calculate service fee and total
   const paymentAmount = baseAmount;

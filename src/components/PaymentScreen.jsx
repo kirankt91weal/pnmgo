@@ -102,8 +102,18 @@ const PaymentScreen = () => {
 
   const handleScanComplete = (data) => {
     setScannedData(data);
-    // Set amount to 0.00 for down payment (can be adjusted later)
-    setAmount('0.00');
+    // Automatically set the amount from the scanned down payment data
+    if (data.downPayment) {
+      // Remove commas and parse the amount properly
+      const cleanAmount = data.downPayment.replace(/,/g, '');
+      const formattedAmount = parseFloat(cleanAmount).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      setAmount(formattedAmount);
+    } else {
+      setAmount('0.00');
+    }
     setSelectedOrder(null);
     setSelectedCatalog(null);
     setMemoText('');
@@ -319,7 +329,12 @@ const PaymentScreen = () => {
           onClick={() => {
             // Build URL with selected items
             const params = new URLSearchParams();
-            params.set('amount', amount);
+            // Pass the amount as a clean number without commas to avoid URL parsing issues
+            const cleanAmount = amount.replace(/,/g, '');
+            params.set('amount', cleanAmount);
+            
+            // Debug logging to see what's being passed
+            console.log('Debug PaymentScreen amount:', { amount, cleanAmount, params: params.toString() });
             
             if (selectedOrder) {
               params.set('order', encodeURIComponent(JSON.stringify(selectedOrder)));
@@ -347,7 +362,7 @@ const PaymentScreen = () => {
           className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-slate-300 disabled:to-slate-400 disabled:cursor-not-allowed text-white font-semibold text-lg rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/30 disabled:shadow-none transform hover:scale-[1.01] disabled:transform-none"
         >
           {amount === '0.00' && !scannedData ? 'Enter Amount' : 
-           scannedData ? `Process Down Payment` : `Pay $${amount}`}
+           `Pay $${amount}`}
         </Button>
       </div>
 
