@@ -121,7 +121,7 @@ const TipScreen = () => {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => navigate('/tap-to-pay' + location.search)}
+          onClick={() => navigate(-1)}
           className="p-2 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-full transition-colors"
         >
           <ArrowLeft className="w-5 h-5 text-slate-700 dark:text-gray-300" />

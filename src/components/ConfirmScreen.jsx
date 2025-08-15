@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Check, Plus, MessageCircle, X, Share, FileText, Building2, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Check, MessageCircle, X, Share, FileText, RotateCcw, Zap, CheckCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,6 +8,7 @@ import { faCcVisa, faCcMastercard, faCcAmex, faCcDiscover } from '@fortawesome/f
 import { faBuildingColumns } from '@fortawesome/free-solid-svg-icons';
 import ScanModal from './ScanModal';
 import VenmoIcon from './VenmoIcon'; // Added VenmoIcon import
+import AutopayModal from './AutopayModal';
 
 const ConfirmScreen = () => {
   const navigate = useNavigate();
@@ -21,6 +22,12 @@ const ConfirmScreen = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isClosingModal, setIsClosingModal] = useState(false);
   
+  // State for autopay modal
+  const [showAutopayAd, setShowAutopayAd] = useState(false);
+  const [showAutopayModal, setShowAutopayModal] = useState(false);
+  const [autopaySetup, setAutopaySetup] = useState(null);
+  const [autopayFlowCompleted, setAutopayFlowCompleted] = useState(false);
+  
   // Get amount from URL parameters
   const urlParams = new URLSearchParams(location.search);
   const rawAmount = urlParams.get('amount') || '150.00';
@@ -29,8 +36,8 @@ const ConfirmScreen = () => {
   const paymentMethod = urlParams.get('method') || 'card';
   const accountNumber = urlParams.get('accountNumber') || '';
   const status = urlParams.get('status') || 'complete';
-  const transactionId = urlParams.get('transactionId') || '';
   const lastFour = urlParams.get('lastFour') || '';
+  const autopayActive = urlParams.get('autopayActive') === 'true';
   
   // Debug the actual URL and search params
   console.log('Debug ConfirmScreen URL:', {
@@ -39,10 +46,10 @@ const ConfirmScreen = () => {
     allParams: Array.from(urlParams.entries())
   });
   
-  // Auto-open modal for new payments (not from transactions view and not refunded)
+  // Auto-open receipt sharing modal for new payments (not from transactions view and not refunded)
   React.useEffect(() => {
     if (!fromTransactions && status !== 'refunded') {
-      // Small delay to ensure the page is fully loaded
+      // Small delay to ensure the page is fully loaded, then show receipt sharing modal
       const timer = setTimeout(() => {
         setShowShareModal(true);
       }, 500);
@@ -50,6 +57,13 @@ const ConfirmScreen = () => {
       return () => clearTimeout(timer);
     }
   }, [fromTransactions, status]);
+
+  // Function to handle autopay completion (either setup or skip)
+  const handleAutopayComplete = (setupData) => {
+    setAutopaySetup(setupData);
+    setShowAutopayAd(false);
+    setAutopayFlowCompleted(true);
+  };
 
 
   
@@ -144,6 +158,10 @@ const ConfirmScreen = () => {
       setShowShareModal(false);
       setIsClosingModal(false);
       setShareContacts('');
+      // Show autopay ad after receipt sharing is closed
+      if (!fromTransactions && status !== 'refunded') {
+        setShowAutopayAd(true);
+      }
     }, 200);
   };
 
@@ -163,6 +181,10 @@ const ConfirmScreen = () => {
       setShowConfirmation(false);
       setShowShareModal(false);
       setShareContacts('');
+      // Show autopay ad after receipt is sent
+      if (!fromTransactions && status !== 'refunded') {
+        setShowAutopayAd(true);
+      }
     }, 2000);
   };
 
@@ -184,6 +206,36 @@ const ConfirmScreen = () => {
         <div className="w-10"></div> {/* Spacer for centering */}
       </div>
 
+      {/* Autopay Ad Flash */}
+      {showAutopayAd && (
+        <div className="mx-5 mt-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-4 text-white shadow-lg">
+          <div className="flex items-center justify-between">
+            {/* Left side - Icon and text */}
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Zap className="w-4 h-4 text-white" />
+              </div>
+              <div className="min-w-0">
+                <h3 className="font-semibold text-sm leading-tight">Setup AutoPay & Save</h3>
+                <p className="text-blue-100 text-xs opacity-90">Never miss payments • Save on fees</p>
+              </div>
+            </div>
+            
+            {/* Right side - Button */}
+            <Button
+              onClick={() => {
+                setShowAutopayAd(false);
+                setShowAutopayModal(true);
+              }}
+              size="sm"
+              className="bg-white text-blue-600 hover:bg-blue-50 font-medium px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex-shrink-0"
+            >
+              Setup
+            </Button>
+          </div>
+        </div>
+      )}
+
       <div className="p-5 space-y-4">
         {/* Payment Summary */}
         <div className="space-y-3">
@@ -197,6 +249,7 @@ const ConfirmScreen = () => {
               <button
                 onClick={handleShareReceipt}
                 className="absolute top-2 right-2 flex items-center space-x-1 text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition-colors duration-200"
+                title="Share Receipt"
               >
                 <Share className="w-4 h-4" />
                 <span className="text-sm font-medium">Receipt</span>
@@ -277,6 +330,14 @@ const ConfirmScreen = () => {
                 <span className="font-bold text-gray-700 dark:text-gray-200">Total:</span>
                 <span className="font-bold text-gray-700 dark:text-gray-200">${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
+              
+              {/* Autopay Status */}
+              {(autopaySetup || autopayActive) && (
+                <div className="flex justify-between items-center border-t border-gray-200 dark:border-gray-700 pt-3">
+                  <span className="text-emerald-600 dark:text-emerald-400 font-medium">AutoPay Status:</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-medium">Active</span>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -438,6 +499,23 @@ const ConfirmScreen = () => {
 
             {/* Modal Content */}
             <div className="p-6 space-y-4">
+              {/* Autopay Success Message */}
+              {autopaySetup && (
+                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4 mb-4">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                    <div>
+                      <p className="text-sm font-medium text-green-800 dark:text-green-200">
+                        AutoPay Setup Complete!
+                      </p>
+                      <p className="text-xs text-green-600 dark:text-green-300">
+                        {autopaySetup.frequency} payments of ${autopaySetup.paymentAmount.toFixed(2)} starting {new Date(autopaySetup.startDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700 dark:text-gray-200">
                   Email or Phone Number
@@ -525,6 +603,18 @@ const ConfirmScreen = () => {
           onClose={() => setShowScanModal(false)}
           onScanComplete={() => setShowScanModal(false)}
           existingData={scannedData}
+        />
+      )}
+
+      {/* Autopay Modal */}
+      {showAutopayModal && (
+        <AutopayModal
+          isOpen={showAutopayModal}
+          onClose={() => setShowAutopayModal(false)}
+          onSetupComplete={handleAutopayComplete}
+          scannedData={scannedData}
+          paymentMethod={paymentMethod}
+          downPaymentAmount={amount}
         />
       )}
     </div>
