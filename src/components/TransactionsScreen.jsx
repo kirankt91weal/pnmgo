@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, Check, ChevronRight, X, RotateCcw, CreditCard, AlertCircle, RefreshCw, ChevronLeft, Building2, Smartphone } from 'lucide-react';
+import { ArrowLeft, Calendar, Check, ChevronRight, X, RotateCcw, CreditCard, AlertCircle, RefreshCw, ChevronLeft } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCcVisa, faCcMastercard, faCcAmex, faCcDiscover, faCashApp } from '@fortawesome/free-brands-svg-icons';
 import { faBuildingColumns } from '@fortawesome/free-solid-svg-icons';
@@ -266,6 +266,9 @@ const TransactionsScreen = () => {
           amount = (downPayment + serviceFee).toFixed(2);
         }
         
+        // Add AutoPay active status for ~25% of completed transactions
+        const isAutopayActive = Math.random() < 0.25;
+        
         transactions.push({
           id: transactions.length + 1,
           paymentMethod,
@@ -278,7 +281,8 @@ const TransactionsScreen = () => {
           amount: `$${parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
           transactionId: `TXN-${String(transactions.length + 1).padStart(3, '0')}`,
           time: timeStr,
-          selectedItem
+          selectedItem,
+          autopayActive: isAutopayActive
         });
       }
       
@@ -338,7 +342,7 @@ const TransactionsScreen = () => {
           id: transactions.length + 1,
           paymentMethod,
           lastFour: paymentMethod.type === 'card' ? String(Math.floor(Math.random() * 9000) + 1000) : 
-                    paymentMethod.type === 'ach' ? String(Math.floor(Math.random() * 9000) + 1000) : '',
+                    paymentMethod.type === 'ach' ? String(Math.floor(Math.random() * 1000) + 1000) : '',
           status: 'Declined',
           statusIcon: X,
           statusColor: 'text-red-600',
@@ -346,7 +350,8 @@ const TransactionsScreen = () => {
           amount: `$${parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
           transactionId: `TXN-${String(transactions.length + 1).padStart(3, '0')}`,
           time: timeStr,
-          selectedItem
+          selectedItem,
+          autopayActive: false
         });
       }
       
@@ -414,7 +419,8 @@ const TransactionsScreen = () => {
           amount: `$${parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
           transactionId: `TXN-${String(transactions.length + 1).padStart(3, '0')}`,
           time: timeStr,
-          selectedItem
+          selectedItem,
+          autopayActive: false
         });
       }
     }
@@ -435,6 +441,7 @@ const TransactionsScreen = () => {
     params.set('status', transaction.status.toLowerCase()); // Add status parameter
     params.set('method', transaction.paymentMethod.type); // Add payment method
     params.set('lastFour', transaction.lastFour); // Add last four digits
+    params.set('autopayActive', transaction.autopayActive ? 'true' : 'false'); // Add AutoPay status
     
     // Add selected item data if it exists
     if (transaction.selectedItem) {
@@ -567,6 +574,7 @@ const TransactionsScreen = () => {
   const completedTransactions = transactions.filter(t => t.status === 'Complete').length;
   const declinedTransactions = transactions.filter(t => t.status === 'Declined').length;
   const refundedTransactions = transactions.filter(t => t.status === 'Refunded').length;
+  const autopayActiveTransactions = transactions.filter(t => t.autopayActive).length;
   const totalAmount = transactions
     .filter(t => t.status === 'Complete')
     .reduce((sum, t) => sum + parseFloat(t.amount.replace('$', '')), 0);
@@ -800,6 +808,8 @@ const TransactionsScreen = () => {
               </div>
             </CardContent>
           </Card>
+
+
         </div>
 
         {/* Transactions List */}
@@ -819,77 +829,71 @@ const TransactionsScreen = () => {
                 >
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
-                        {/* Left Side - Card Info */}
-                        <div className="flex items-center space-x-3">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700">
-                            {transaction.paymentMethod.type === 'card' ? (
-                              <FontAwesomeIcon 
-                                icon={transaction.paymentMethod.icon.icon} 
-                                className={`h-6 w-6 ${transaction.paymentMethod.icon.color} dark:text-gray-300`}
-                              />
-                            ) : transaction.paymentMethod.type === 'ach' ? (
-                              <FontAwesomeIcon icon={faBuildingColumns} className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
-                            ) : transaction.paymentMethod.type === 'cashapp' ? (
-                              <FontAwesomeIcon icon={faCashApp} className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
-                            ) : transaction.paymentMethod.type === 'venmo' ? (
-                              <VenmoIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                            ) : (
-                              <CreditCard className="h-6 w-6 text-gray-600 dark:text-gray-400" />
-                            )}
-                          </div>
-                          <div className="flex flex-col">
+                      {/* Left Side - Card Info */}
+                      <div className="flex items-center space-x-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700">
+                          {transaction.paymentMethod.type === 'card' ? (
+                            <FontAwesomeIcon 
+                              icon={transaction.paymentMethod.icon.icon} 
+                              className={`h-6 w-6 ${transaction.paymentMethod.icon.color} dark:text-gray-300`}
+                            />
+                          ) : transaction.paymentMethod.type === 'ach' ? (
+                            <FontAwesomeIcon icon={faBuildingColumns} className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                          ) : transaction.paymentMethod.type === 'cashapp' ? (
+                            <FontAwesomeIcon icon={faCashApp} className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                          ) : transaction.paymentMethod.type === 'venmo' ? (
+                            <VenmoIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                          ) : (
+                            <CreditCard className="h-6 w-6 text-gray-600 dark:text-gray-400" />
+                          )}
+                        </div>
+                        <div className="flex flex-col">
+                          <div className="flex items-center space-x-2">
                             <span className="text-sm font-medium text-gray-700 dark:text-gray-200">•••• {transaction.lastFour}</span>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">{transaction.paymentMethod.name}</span>
                             <div className="flex items-center space-x-1">
                               <StatusIcon className={`h-3 w-3 ${transaction.statusColor}`} />
                               <span className={`text-xs font-medium ${transaction.statusColor}`}>{transaction.status}</span>
                             </div>
                           </div>
-                        </div>
-                        
-                        {/* Right Side - Amount and Time */}
-                        <div className="flex flex-col items-end space-y-1">
-                          <span className={`text-sm font-semibold ${transaction.status === 'Declined' ? 'text-red-600' : transaction.status === 'Refunded' ? 'text-blue-600' : 'text-gray-900 dark:text-gray-100'}`}>
-                            {transaction.status === 'Declined' ? '-' : transaction.status === 'Refunded' ? '-' : ''}{transaction.amount}
-                          </span>
+
                           <div className="flex items-center space-x-2">
-                            <p className="text-xs text-gray-500 dark:text-gray-400">{transaction.date} • {transaction.time}</p>
-                            {/* Payment Type Indicator - Subtle dot with tooltip */}
+                            <span className="text-xs text-gray-500 dark:text-gray-400">{transaction.time}</span>
+                            {/* Payment Type Indicator - Just colored dots */}
                             {transaction.selectedItem && (
                               <div className="flex items-center space-x-1">
                                 {transaction.selectedItem.type === 'order' && (
-                                  <div className="flex items-center space-x-1">
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full" title="Order Payment"></div>
-                                    <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">O</span>
-                                  </div>
+                                  <div className="w-2 h-2 bg-blue-500 rounded-full" title="Order Payment"></div>
                                 )}
                                 {transaction.selectedItem.type === 'catalog' && (
-                                  <div className="flex items-center space-x-1">
-                                    <div className="w-2 h-2 bg-green-500 rounded-full" title="Catalog Payment"></div>
-                                    <span className="text-xs text-green-600 dark:text-green-400 font-medium">C</span>
-                                  </div>
+                                  <div className="w-2 h-2 bg-green-500 rounded-full" title="Catalog Payment"></div>
                                 )}
                                 {transaction.selectedItem.type === 'scanned' && (
-                                  <div className="flex items-center space-x-1">
-                                    <div className="w-2 h-2 bg-purple-500 rounded-full" title="Scanned Document Payment"></div>
-                                    <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">S</span>
-                                  </div>
+                                  <div className="w-2 h-2 bg-purple-500 rounded-full" title="Scanned Document Payment"></div>
                                 )}
                                 {transaction.selectedItem.type === 'memo' && (
-                                  <div className="flex items-center space-x-1">
-                                    <div className="w-2 h-2 bg-orange-500 rounded-full" title="Memo Payment"></div>
-                                    <span className="text-xs text-orange-600 dark:text-orange-400 font-medium">M</span>
-                                  </div>
+                                  <div className="w-2 h-2 bg-orange-500 rounded-full" title="Memo Payment"></div>
                                 )}
+                              </div>
+                            )}
+                            {transaction.autopayActive && (
+                              <div className="flex items-center space-x-1">
+                                <span className="text-xs text-green-600 dark:text-green-400 font-medium">AutoPay</span>
                               </div>
                             )}
                           </div>
                         </div>
-                        
-                        {/* Chevron */}
-                        <div className="flex items-center">
-                          <ChevronRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-                        </div>
+                      </div>
+                      
+                      {/* Right Side - Amount and Arrow */}
+                      <div className="flex items-center gap-0">
+
+                        <span className={`text-sm font-semibold text-right min-w-[80px] ${transaction.status === 'Declined' ? 'text-red-600' : transaction.status === 'Refunded' ? 'text-blue-600' : 'text-gray-900 dark:text-gray-100'}`}>
+                          {transaction.status === 'Declined' ? '-' : transaction.status === 'Refunded' ? '-' : ''}{transaction.amount}
+                        </span>
+                        <ChevronRight className="h-4 w-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+                      </div>
+                      
+
                     </div>
                   </CardContent>
                 </Card>

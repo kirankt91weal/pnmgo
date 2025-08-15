@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, QrCode, Smartphone, CheckCircle, DollarSign } from 'lucide-react';
+import { ArrowLeft, QrCode, Smartphone, DollarSign } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,7 +19,7 @@ const CashAppPaymentScreen = () => {
   const selectedMemo = urlParams.get('memo');
   const scannedData = urlParams.get('scanned');
 
-  const [showQRCode, setShowQRCode] = useState(true); // Always show QR code
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [showComplete, setShowComplete] = useState(false);
 

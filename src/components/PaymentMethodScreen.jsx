@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Building2, Smartphone, Wallet, CreditCard, DollarSign } from 'lucide-react';
+import { ArrowLeft, DollarSign } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCcApplePay,
@@ -117,7 +117,7 @@ const PaymentMethodScreen = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate('/payment')}
+            onClick={() => navigate(-1)}
             className="p-2.5 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-2xl transition-all duration-200 group"
           >
             <ArrowLeft className="w-5 h-5 text-slate-600 dark:text-gray-300 group-hover:text-slate-800 dark:group-hover:text-gray-100 transition-colors" />
