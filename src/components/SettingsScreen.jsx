@@ -340,7 +340,7 @@ const SettingsScreen = () => {
         <Card className="bg-white dark:bg-gray-800 border-0 shadow-sm">
           <CardContent className="p-4">
             <div className="text-center space-y-2">
-              <h3 className="font-semibold text-slate-700 dark:text-gray-200">PayNearMe Go</h3>
+              <h3 className="font-semibold text-slate-700 dark:text-gray-200">TapNearMe</h3>
               <p className="text-sm text-slate-500 dark:text-gray-400">Version 1.0.0</p>
               <p className="text-xs text-slate-400 dark:text-gray-500">© 2025 PayNearMe. All rights reserved.</p>
             </div>

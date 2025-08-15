@@ -71,7 +71,7 @@ const LoginScreen = () => {
             <div className="space-y-2">
               <Input
                 type="text"
-                placeholder="PayNearMe Site ID"
+                placeholder="TapNearMe Site ID"
                 value={siteId}
                 onChange={(e) => setSiteId(e.target.value)}
                 className="h-14 bg-white dark:bg-gray-800 border-slate-200 dark:border-gray-600 text-slate-700 dark:text-gray-100 placeholder:text-slate-400 dark:placeholder:text-gray-500 rounded-xl text-base font-medium"
