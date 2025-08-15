@@ -70,7 +70,7 @@ const LoginScreen: React.FC = () => {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-md mx-auto px-6 py-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-700 mb-2">PayNearMe Go</h1>
+            <h1 className="text-3xl font-bold text-gray-700 mb-2">TapNearMe</h1>
             <p className="text-gray-600">Select your location to begin</p>
           </div>
         </div>

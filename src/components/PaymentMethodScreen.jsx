@@ -194,7 +194,7 @@ const PaymentMethodScreen = () => {
           })}
         </div>
 
-        {/* PayNearMe QR Code Section */}
+        {/* TapNearMe QR Code Section */}
         <div className="mt-6">
           <div className="w-full bg-white dark:bg-gray-800 rounded-2xl border border-slate-200/40 dark:border-gray-700/40 shadow-lg p-4">
             <div className="grid grid-cols-2 gap-4 items-center">
@@ -203,7 +203,7 @@ const PaymentMethodScreen = () => {
                 <div className="w-24 h-24 bg-white rounded-xl flex items-center justify-center">
                   <img 
                     src="/paynearme-qr.png" 
-                    alt="PayNearMe QR Code"
+                    alt="TapNearMe QR Code"
                     className="w-full h-full rounded-xl object-contain"
                   />
                 </div>
@@ -213,7 +213,7 @@ const PaymentMethodScreen = () => {
               <div className="flex flex-col items-center justify-center space-y-3">
                 <img 
                   src="/logo-top.png" 
-                  alt="PayNearMe Logo"
+                  alt="TapNearMe Logo"
                   className="w-auto h-auto max-h-8"
                 />
                 <p className="text-sm text-slate-600 dark:text-gray-400 text-center">
